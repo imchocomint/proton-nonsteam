@@ -54,4 +54,4 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           files: proton-custom-${{ github.ref_name }}.tar.gz
-          body: "Custom Proton build for ${{ github.ref_name }}"
+          body: "Steamless Proton build for ${{ github.ref_name }}"
