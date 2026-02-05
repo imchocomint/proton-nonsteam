@@ -1,0 +1,41 @@
+name: Build and Release Proton
+
+on:
+  push:
+    tags:
+      - 'v*' # Trigger only on version tags (e.g., v1.0, v2.1.4)
+  workflow_dispatch: # Still allow manual triggers for testing
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # Required to upload files to a Release
+    timeout-minutes: 480 
+
+    steps:
+      - name: Checkout Source
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Build Proton
+        run: |
+          mkdir build && cd build
+          ../proton/configure.sh --build-name="Proton-${{ github.ref_name }}"
+          make redist
+
+      - name: Create Tarball
+        run: |
+          # Compress the build output into a single file
+          tar -czf proton-custom-${{ github.ref_name }}.tar.gz -C build/redist .
+
+      - name: Generate Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: proton-custom-${{ github.ref_name }}.tar.gz
+          body: "Automated build of Proton for tag ${{ github.ref_name }}"
+          draft: false
+          prerelease: false
+      - name: Free Disk Space (Ubuntu)
+        uses: jlumbroso/free-disk-space@v1.3.1
