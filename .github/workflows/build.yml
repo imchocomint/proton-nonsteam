@@ -48,7 +48,7 @@ jobs:
 
       - name: Create Tarball
         run: |
-          tar -czf proton-custom-${{ github.ref_name }}.tar.gz -C ../proton_build/redist .
+          tar -czf proton-custom-${{ github.ref_name }}.tar.gz -C ../build/redist .
 
       - name: Generate Release
         uses: softprops/action-gh-release@v2
