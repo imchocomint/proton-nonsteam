@@ -41,17 +41,27 @@ jobs:
           cd build
           
           # 3. Run the script from there (it will populate the current 'build' folder)
-          ../configure.sh --build-name="Proton-${{ github.ref_name }}"
+          ../configure.sh --build-name="nonsteam-${{ github.ref_name }}"
           
           # 4. Now run make inside this folder
           make redist
 
       - name: Create Tarball
         run: |
-          tar -czf proton-custom-${{ github.ref_name }}.tar.gz -C ../build/redist .
+          # 1. Verify the folder exists before trying to zip it
+          if [ -d "$GITHUB_WORKSPACE/build/redist" ]; then
+            echo "✅ Found redist folder at $GITHUB_WORKSPACE/build/redist"
+            # 2. Use the absolute path to create the tarball
+            tar -czf proton-nonsteam-${{ github.ref_name }}.tar.gz -C "$GITHUB_WORKSPACE/build/redist" .
+          else
+            echo "❌ ERROR: redist folder not found!"
+            echo "Contents of $GITHUB_WORKSPACE/build/:"
+            ls -R "$GITHUB_WORKSPACE/build/"
+            exit 1
+          fi
 
       - name: Generate Release
         uses: softprops/action-gh-release@v2
         with:
-          files: proton-custom-${{ github.ref_name }}.tar.gz
+          files: proton-nonsteam-${{ github.ref_name }}.tar.gz
           body: "Steamless Proton build for ${{ github.ref_name }}"
