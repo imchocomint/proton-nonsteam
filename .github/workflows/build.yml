@@ -2,12 +2,14 @@ name: Build and Release Proton
 
 on:
   push:
-    tags:
-      - 'v*'
     branches:
       - 'main'
       - 'proton_*'
+    paths-ignore:
+      - '.github/workflows/restore-readme.yml'
+      - '.github/README.md'
   workflow_dispatch:
+
 
 jobs:
   release:
