@@ -4,6 +4,9 @@ on:
   push:
     tags:
       - 'v*'
+    branches:
+      - 'main'
+      - 'proton_*'
   workflow_dispatch:
 
 jobs:
@@ -13,6 +16,17 @@ jobs:
       contents: write
     
     steps:
+      - name: Set Build Metadata
+        id: meta
+        run: |
+          # Define values
+          DATE=$(date +'%Y%m%d')
+          REF=${{ github.ref_name }}
+          
+          # Set as Outputs (for context access)
+          echo "build_date=$DATE" >> $GITHUB_OUTPUT
+          echo "ref_name=$REF" >> $GITHUB_OUTPUT
+
       - name: Free Disk Space
         uses: jlumbroso/free-disk-space@main
         with:
@@ -24,7 +38,7 @@ jobs:
       - name: Checkout Source
         uses: actions/checkout@v4
         with:
-          submodules: false # We handle submodules manually to fix the URL bug
+          submodules: false
 
       - name: Fix Submodule URLs & Sync
         run: |
@@ -34,36 +48,38 @@ jobs:
       - name: Configure & Build
         run: |
           chmod +x configure.sh
-          # 1. Create a build directory
-          mkdir build
-          
-          # 2. Go INTO the build directory
-          cd build
-          
-          # 3. Run the script from there (it will populate the current 'build' folder)
-          ../configure.sh --build-name="nonsteam-${{ github.ref_name }}"
-          
-          # 4. Now run make inside this folder
+          mkdir build && cd build
+          ../configure.sh --build-name="nonsteam-${{ steps.meta.outputs.ref_name }}"
           make redist
 
       - name: Create Tarball
+        id: pack
         run: |
-          # 1. Verify the folder exists before trying to zip it
+          # Create the filename using the outputs from the meta step
+          FILENAME="proton-nonsteam-${{ steps.meta.outputs.ref_name }}-${{ steps.meta.outputs.build_date }}-b${{ github.run_number }}.tar.gz"
+          echo "fname=$FILENAME" >> $GITHUB_OUTPUT
+          
           if [ -d "$GITHUB_WORKSPACE/build/redist" ]; then
-            echo "✅ Found redist folder at $GITHUB_WORKSPACE/build/redist"
-            # 2. Use the absolute path to create the tarball
-            tar -czf proton-nonsteam-${{ github.ref_name }}.tar.gz -C "$GITHUB_WORKSPACE/build/redist" .
+            tar -czf "$FILENAME" -C "$GITHUB_WORKSPACE/build/redist" .
           else
-            echo "❌ ERROR: redist folder not found!"
-            echo "Contents of $GITHUB_WORKSPACE/build/:"
-            ls -R "$GITHUB_WORKSPACE/build/"
+            echo "Build directory not found"
             exit 1
           fi
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ steps.pack.outputs.fname }}
+          path: ${{ steps.pack.outputs.fname }}
+          retention-days: 7
 
       - name: Generate Release
         uses: softprops/action-gh-release@v2
         with:
-          files: proton-nonsteam-${{ github.ref_name }}.tar.gz
-          # Add this line to handle manual runs
-          tag_name: "nonsteam-build-${{ github.run_number }}" 
-          body: "Nonsteam Build"
+          files: ${{ steps.pack.outputs.fname }}
+          tag_name: "nonsteam-${{ steps.meta.outputs.ref_name }}-${{ steps.meta.outputs.build_date }}-b${{ github.run_number }}"
+          body: |
+            Automated Nonsteam Build
+            - Branch/Tag: ${{ steps.meta.outputs.ref_name }}
+            - Build Date: ${{ steps.meta.outputs.build_date }}
+            - Build Number: ${{ github.run_number }}
