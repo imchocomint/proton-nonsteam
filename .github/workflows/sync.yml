@@ -19,6 +19,12 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+          # This ensures the full history is fetched, 
+          # which is often needed for merging/rebasing.
+          fetch-depth: 0
     # Runs a single command using the runners shell
     - name: Fetch + merge
       run: |
