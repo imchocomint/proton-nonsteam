@@ -36,17 +36,14 @@ jobs:
       run: |
         git remote add upstream https://github.com/ValveSoftware/Proton.git
         git fetch upstream bleeding-edge
-        git merge upstream/bleeding-edge
+        git merge upstream/bleeding-edge --no-commit --no-ff || echo "Handling submodule conflicts..."
     - name: Submodules
       run: |
-        git config --file .gitmodules submodule.wine.url https://github.com/ValveSoftware/wine.git
-        git config --file .gitmodules submodule.dxvk.url https://github.com/ValveSoftware/dxvk.git
-        git config --file .gitmodules submodule.vkd3d-proton.url https://github.com/ValveSoftware/vkd3d-proton.git
         git submodule sync
         git submodule update --init --recursive
-        git add wine vkd3d vkd3d-proton dxvk dxvk-nvapi FEX
+        git checkout upstream/bleeding-edge -- dxvk vkd3d-proton FEX wine vkd3d dxvk-nvapi
     - name: Push
       run: |
         git add .
         git commit -m "Resolve submodule conflicts by favoring upstream"
-        git push origin [your-branch-name]
+        git push origin HEAD:bleeding-edge
