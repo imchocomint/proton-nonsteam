@@ -25,6 +25,7 @@ jobs:
           # This ensures the full history is fetched, 
           # which is often needed for merging/rebasing.
           fetch-depth: 0
+          submodules: recursive
     # Runs a single command using the runners shell
     - name: Define user
       run: |
@@ -33,10 +34,12 @@ jobs:
     - name: Fetch + merge
       run: |
         git remote add upstream https://github.com/ValveSoftware/Proton.git
-        git fetch upstream
+        git fetch upstream bleeding-edge
         git merge upstream/bleeding-edge
     - name: Submodules
-      run: git checkout upstream/bleeding-edge -- dxvk dxvk-nvapi vkd3d vkd3d-proton wine
+      run: |
+        git submodule update --init --recursive
+        git add wine vkd3d vkd3d-proton dxvk dxvk-nvapi FEX
     - name: Push
       run: |
         git add .
