@@ -284,7 +284,7 @@ static NTSTATUS vrclient_init_registry( Params *params, bool wow64 )
         *buffer = 0;
         compositor->GetVulkanDeviceExtensionsRequired( phys_devices[i], buffer, length );
 
-        sprintf( name, "PCIID:%04x:%04x", prop.vendorID, prop.deviceID );
+        sprintf( name, "PCIID:%04x:%04x", prop.vendorID, (uint16_t)prop.deviceID );
         TRACE( "%s: %s.\n", name, buffer );
         set_reg_ascii_str( params->vr_key, name, buffer );
 
@@ -440,3 +440,185 @@ VRCLIENT_UNIX_FUNC( vrclient_VRClientCoreFactory );
 VRCLIENT_UNIX_FUNC( vrclient_get_unix_buffer );
 
 VRCLIENT_UNIX_IMPL( IVRTrackedCamera, 001, GetVideoStreamFrame );
+
+/* manual conversion functions */
+static void *alloc_low_mem( ULONG_PTR size )
+{
+    SYSTEM_BASIC_INFORMATION info;
+    ULONG_PTR zero_bits;
+    void *ret = NULL;
+
+    NtQuerySystemInformation(SystemEmulationBasicInformation, &info, sizeof(info), NULL);
+    zero_bits = (ULONG_PTR)info.HighestUserAddress | 0x7fffffff;
+    NtAllocateVirtualMemory( GetCurrentProcess(), &ret, zero_bits, &size, MEM_COMMIT, PAGE_READWRITE );
+    return ret;
+}
+
+#if defined(__x86_64__) || defined(__aarch64__)
+w32_HiddenAreaMesh_t::operator u64_HiddenAreaMesh_t() const
+{
+    u64_HiddenAreaMesh_t ret;
+    ret.pVertexData = this->pVertexData;
+    ret.unTriangleCount = this->unTriangleCount;
+    return ret;
+}
+
+u64_HiddenAreaMesh_t::operator w32_HiddenAreaMesh_t() const
+{
+    w32_HiddenAreaMesh_t ret;
+    HmdVector2_t *ret_ptr;
+    unsigned int size;
+
+    size = this->unTriangleCount * 3 * sizeof(*this->pVertexData);
+    ret_ptr = (HmdVector2_t *)alloc_low_mem( size );
+    memcpy( ret_ptr, this->pVertexData, size );
+    ret.pVertexData = ret_ptr;
+    ret.unTriangleCount = this->unTriangleCount;
+    return ret;
+}
+
+static uint8_t *copy_texture_map_data( const uint8_t *src, unsigned int width, unsigned int height, unsigned int mips,
+                                       int format )
+{
+    unsigned int size = 0, i;
+    uint8_t *ret;
+
+    if (format) FIXME( "Unhandled format %d.\n", format );
+
+    for (i = 0; i < mips; ++i)
+    {
+        size += width * height;
+        if (width > 1) width >>= 1;
+        if (height > 1) height >>= 1;
+    }
+    size *= 4;
+    ret = (uint8_t *)alloc_low_mem( size );
+    memcpy( ret, src, size );
+    return ret;
+}
+
+w32_RenderModel_TextureMap_t_1237::operator u64_RenderModel_TextureMap_t_1237() const
+{
+    u64_RenderModel_TextureMap_t_1237 ret;
+    ret.unWidth = this->unWidth;
+    ret.unHeight = this->unHeight;
+    ret.rubTextureMapData = this->rubTextureMapData;
+    ret.format = this->format;
+    ret.unMipLevels = this->unMipLevels;
+    return ret;
+}
+
+u64_RenderModel_TextureMap_t_1237::operator w32_RenderModel_TextureMap_t_1237() const
+{
+    w32_RenderModel_TextureMap_t_1237 ret;
+    ret.unWidth = this->unWidth;
+    ret.unHeight = this->unHeight;
+    ret.rubTextureMapData = copy_texture_map_data( this->rubTextureMapData, unWidth, unHeight, unMipLevels, format );
+    ret.format = this->format;
+    ret.unMipLevels = this->unMipLevels;
+    return ret;
+}
+
+w32_RenderModel_TextureMap_t_11111::operator u64_RenderModel_TextureMap_t_11111() const
+{
+    u64_RenderModel_TextureMap_t_11111 ret;
+    ret.unWidth = this->unWidth;
+    ret.unHeight = this->unHeight;
+    ret.rubTextureMapData = this->rubTextureMapData;
+    ret.format = this->format;
+    return ret;
+}
+
+u64_RenderModel_TextureMap_t_11111::operator w32_RenderModel_TextureMap_t_11111() const
+{
+    w32_RenderModel_TextureMap_t_11111 ret;
+    ret.unWidth = this->unWidth;
+    ret.unHeight = this->unHeight;
+    ret.rubTextureMapData = copy_texture_map_data( this->rubTextureMapData, unWidth, unHeight, 1, format );
+    ret.format = this->format;
+    return ret;
+}
+
+w32_RenderModel_TextureMap_t_090::operator u64_RenderModel_TextureMap_t_090() const
+{
+    u64_RenderModel_TextureMap_t_090 ret;
+    ret.unWidth = this->unWidth;
+    ret.unHeight = this->unHeight;
+    ret.rubTextureMapData = this->rubTextureMapData;
+    return ret;
+}
+
+u64_RenderModel_TextureMap_t_090::operator w32_RenderModel_TextureMap_t_090() const
+{
+    w32_RenderModel_TextureMap_t_090 ret;
+    ret.unWidth = this->unWidth;
+    ret.unHeight = this->unHeight;
+    ret.rubTextureMapData = copy_texture_map_data( this->rubTextureMapData, unWidth, unHeight, 1, 0 );
+    return ret;
+}
+
+w32_RenderModel_t_0912::operator u64_RenderModel_t_0912() const
+{
+    u64_RenderModel_t_0912 ret;
+    ret.rVertexData = this->rVertexData;
+    ret.unVertexCount = this->unVertexCount;
+    ret.rIndexData = this->rIndexData;
+    ret.unTriangleCount = this->unTriangleCount;
+    ret.diffuseTextureId = this->diffuseTextureId;
+    return ret;
+}
+
+u64_RenderModel_t_0912::operator w32_RenderModel_t_0912() const
+{
+    w32_RenderModel_t_0912 ret;
+    unsigned int size;
+    BYTE *data;
+
+    size = unVertexCount * sizeof(*rVertexData) + unTriangleCount * 3 * sizeof(*rIndexData);
+    data = (BYTE *)alloc_low_mem( size );
+    ret.rVertexData = (RenderModel_Vertex_t *)data;
+    memcpy( data, this->rVertexData, unVertexCount * sizeof(*rVertexData) );
+    data += unVertexCount * sizeof(*rVertexData);
+    ret.unVertexCount = this->unVertexCount;
+    ret.rIndexData = (uint16_t *)data;
+    memcpy( data, this->rIndexData, unTriangleCount * 3 * sizeof(*rIndexData) );
+    ret.unTriangleCount = this->unTriangleCount;
+
+    ret.diffuseTextureId = this->diffuseTextureId;
+    return ret;
+}
+
+w32_RenderModel_t_090::operator u64_RenderModel_t_090() const
+{
+    u64_RenderModel_t_090 ret;
+    ret.ulInternalHandle = this->ulInternalHandle;
+    ret.rVertexData = this->rVertexData;
+    ret.unVertexCount = this->unVertexCount;
+    ret.rIndexData = this->rIndexData;
+    ret.unTriangleCount = this->unTriangleCount;
+    ret.diffuseTexture = this->diffuseTexture;
+    return ret;
+}
+
+u64_RenderModel_t_090::operator w32_RenderModel_t_090() const
+{
+    w32_RenderModel_t_090 ret;
+    unsigned int size;
+    BYTE *data;
+
+    ret.ulInternalHandle = this->ulInternalHandle;
+
+    size = unVertexCount * sizeof(*rVertexData) + unTriangleCount * 3 * sizeof(*rIndexData);
+    data = (BYTE *)alloc_low_mem( size );
+    ret.rVertexData = (RenderModel_Vertex_t *)data;
+    memcpy( data, this->rVertexData, unVertexCount * sizeof(*rVertexData) );
+    data += unVertexCount * sizeof(*rVertexData);
+    ret.unVertexCount = this->unVertexCount;
+    ret.rIndexData = (uint16_t *)data;
+    memcpy( data, this->rIndexData, unTriangleCount * 3 * sizeof(*rIndexData) );
+    ret.unTriangleCount = this->unTriangleCount;
+
+    ret.diffuseTexture = this->diffuseTexture;
+    return ret;
+}
+#endif

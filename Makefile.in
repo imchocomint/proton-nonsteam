@@ -602,7 +602,8 @@ WINE_SOURCE_ARGS = \
 WINE_AUTOCONF_ARGS = \
   --enable-werror \
   --with-mingw=$(MINGW_TYPE) \
-  --disable-tests
+  --disable-tests \
+  --enable-build-id
 
 WINE_x86_64_AUTOCONF_ARGS = \
   --enable-archs=$(call list-join,$(comma),x86_64 $(filter-out x86_64 $(unix_ARCHS),$(windows_ARCHS))) \
@@ -700,6 +701,14 @@ $(eval $(call rules-source,vrclient,$(SRCDIR)/vrclient_x64))
 $(eval $(call rules-makedep,vrclient,i386))
 $(eval $(call rules-makedep,vrclient,x86_64))
 $(eval $(call rules-makedep,vrclient,aarch64))
+
+$(OBJ)/.vrclient-x86_64-post-build:
+	cp -fa $(VRCLIENT_x86_64_DST)/lib/wine/x86_64-unix/vrclient_x64.so $(DST_DIR)/lib/wine/x86_64-unix/vrclient.so
+	touch $@
+
+$(OBJ)/.vrclient-aarch64-post-build:
+	cp -fa $(VRCLIENT_aarch64_DST)/lib/wine/aarch64-unix/vrclient_x64.so $(DST_DIR)/lib/wine/aarch64-unix/vrclient.so
+	touch $@
 
 
 ##
