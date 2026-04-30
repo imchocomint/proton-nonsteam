@@ -37,6 +37,10 @@ jobs:
         git remote add upstream https://github.com/ValveSoftware/Proton.git
         git fetch upstream bleeding-edge
         git merge upstream/bleeding-edge --no-commit --no-ff || echo "Handling submodule conflicts..."
+    - name: Resolve .gitmodules conflicts
+      run: |
+        # Use upstream's .gitmodules if conflicts exist
+        git checkout upstream/bleeding-edge -- .gitmodules
     - name: Submodules
       run: |
         git submodule sync
