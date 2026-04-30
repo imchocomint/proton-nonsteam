@@ -2,7 +2,11 @@
 {
   "version" "2"
   "commandline" "/proton %verb%"
-  "require_tool_appid" "1628350"
+<<<<<<< HEAD
+  "require_tool_appid" "4185400"
+=======
+  "require_tool_appid" "4183110"
+>>>>>>> upstream/bleeding-edge
   "use_sessions" "1"
   "compatmanager_layer_name" "proton"
 }

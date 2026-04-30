@@ -1,6 +1,6 @@
 [submodule "wine"]
 	path = wine
-	url = https://github.com/ValveSoftware/wine
+	url = ../wine
 [submodule "dxvk"]
 	path = dxvk
 	url = https://github.com/doitsujin/dxvk.git
@@ -72,3 +72,6 @@
 [submodule "FEX"]
 	path = FEX
 	url = https://github.com/FEX-Emu/FEX/
+[submodule "libsoup"]
+	path = libsoup
+	url = https://github.com/GNOME/libsoup.git

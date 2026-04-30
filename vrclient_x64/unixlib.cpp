@@ -7,9 +7,12 @@
 #include <dlfcn.h>
 #include <pthread.h>
 #include <stdlib.h>
+<<<<<<< HEAD
 
 #define WINE_VK_HOST
 #include <vulkan/vulkan.h>
+=======
+>>>>>>> upstream/bleeding-edge
 
 #if 0
 #pragma makedep unix
@@ -20,72 +23,11 @@ WINE_DEFAULT_DEBUG_CHANNEL(vrclient);
 static void *(*p_HmdSystemFactory)( const char *name, int *return_code );
 static void *(*p_VRClientCoreFactory)( const char *name, int *return_code );
 
-VkDevice_T *(*p_get_native_VkDevice)( VkDevice_T * );
-VkInstance_T *(*p_get_native_VkInstance)( VkInstance_T * );
-VkPhysicalDevice_T *(*p_get_native_VkPhysicalDevice)( VkPhysicalDevice_T * );
-VkPhysicalDevice_T *(*p_get_wrapped_VkPhysicalDevice)( VkInstance_T *, VkPhysicalDevice_T * );
-VkQueue_T *(*p_get_native_VkQueue)( VkQueue_T * );
-
 static PFN_vkCreateInstance p_vkCreateInstance;
 static PFN_vkDestroyInstance p_vkDestroyInstance;
 static PFN_vkEnumeratePhysicalDevices p_vkEnumeratePhysicalDevices;
 PFN_vkGetPhysicalDeviceProperties p_vkGetPhysicalDeviceProperties;
-
-static void *get_winevulkan_unixlib( HMODULE winevulkan )
-{
-    UINT64 unix_funcs;
-    NTSTATUS status;
-    Dl_info info;
-
-    status = NtQueryVirtualMemory( GetCurrentProcess(), winevulkan, (MEMORY_INFORMATION_CLASS)1000 /*MemoryWineUnixFuncs*/,
-                                   &unix_funcs, sizeof(unix_funcs), NULL );
-    if (status)
-    {
-        WINE_ERR("NtQueryVirtualMemory status %#x.\n", (int)status);
-        return NULL;
-    }
-
-    if (!dladdr( (void *)(ULONG_PTR)unix_funcs, &info ))
-    {
-        WINE_ERR("dladdr failed.\n");
-        return NULL;
-    }
-
-    WINE_TRACE( "path %s.\n", info.dli_fname );
-    return dlopen( info.dli_fname, RTLD_NOW );
-}
-
 static void *vulkan;
-
-static BOOL load_vk_unwrappers( HMODULE winevulkan )
-{
-    void *unix_handle;
-
-    if (!(unix_handle = get_winevulkan_unixlib( winevulkan )))
-    {
-        ERR("Unable to open winevulkan.so.\n");
-        return FALSE;
-    }
-
-#define LOAD_FUNC( name )                                                        \
-    if (!(p_##name = (decltype(p_##name))dlsym( unix_handle, "__wine_" #name ))) \
-    {                                                                            \
-        ERR( "%s not found.\n", #name );                                         \
-        dlclose( unix_handle );                                                  \
-        return FALSE;                                                            \
-    }
-
-    LOAD_FUNC( get_native_VkDevice )
-    LOAD_FUNC( get_native_VkInstance )
-    LOAD_FUNC( get_native_VkPhysicalDevice )
-    LOAD_FUNC( get_wrapped_VkPhysicalDevice )
-    LOAD_FUNC( get_native_VkQueue )
-
-#undef LOAD_FUNC
-
-    dlclose( unix_handle );
-    return TRUE;
-}
 
 BOOL load_vulkan(void)
 {
@@ -168,6 +110,39 @@ static int parse_extensions( const char *extensions, char ***list )
     return count;
 }
 
+static void map_device_extensions( char **exts )
+{
+    static struct
+    {
+        const char *unix_ext;
+        const char *win32_ext;
+    }
+    map_extensions[] =
+    {
+        { "VK_KHR_external_memory_fd", "VK_KHR_external_memory_win32" },
+        { "VK_KHR_external_semaphore_fd", "VK_KHR_external_semaphore_win32" },
+        { "VK_KHR_external_fence_fd", "VK_KHR_external_fence_win32" },
+    };
+    int i, j, count;
+    char **list, *p;
+
+    count = parse_extensions( *exts, &list );
+    p = *exts = (char *)calloc( 1, strlen( *exts ) + 1 + ARRAY_SIZE(map_extensions) * 10 );
+    for (i = 0; i < count; ++i)
+    {
+        TRACE("%s\n", list[i]);
+        for (j = 0; j < ARRAY_SIZE(map_extensions); ++j)
+        {
+            if (!strcmp( list[i], map_extensions[j].unix_ext )) break;
+        }
+        if (i) *p++ = ' ';
+        strcpy( p, j == ARRAY_SIZE(map_extensions) ? list[i] : map_extensions[j].win32_ext );
+        p += strlen( p );
+    }
+    if (list) free( list[0] );
+    free( list );
+}
+
 template< typename Params >
 static NTSTATUS vrclient_init_registry( Params *params, bool wow64 )
 {
@@ -191,7 +166,7 @@ static NTSTATUS vrclient_init_registry( Params *params, bool wow64 )
     u_IVRCompositor_IVRCompositor_028 *compositor;
     VkPhysicalDevice *phys_devices = NULL;
     VkPhysicalDeviceProperties prop = {};
-    char *buffer = NULL, *new_buffer;
+    char *buffer = NULL, *new_buffer, *p;
     char *xr_inst_ext, *xr_dev_ext;
     VkInstance vk_instance = NULL;
     BOOL vr_initialized = FALSE;
@@ -283,6 +258,7 @@ static NTSTATUS vrclient_init_registry( Params *params, bool wow64 )
         if (!(buffer = (char *)malloc( length ))) goto failed;
         *buffer = 0;
         compositor->GetVulkanDeviceExtensionsRequired( phys_devices[i], buffer, length );
+        map_device_extensions( &buffer );
 
         sprintf( name, "PCIID:%04x:%04x", prop.vendorID, (uint16_t)prop.deviceID );
         TRACE( "%s: %s.\n", name, buffer );
@@ -347,8 +323,6 @@ static NTSTATUS vrclient_init( Params *params, bool wow64 )
     LOAD_FUNC( VRClientCoreFactory );
 
 #undef LOAD_FUNC
-
-    if (!load_vk_unwrappers( params->winevulkan )) return 0;
 
     params->_ret = true;
     return 0;

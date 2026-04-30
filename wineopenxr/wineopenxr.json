@@ -2,6 +2,10 @@
     "file_format_version": "1.0.0",
     "ICD": {
         "library_path": ".\\wineopenxr.dll",
+<<<<<<< HEAD
         "api_version": "1.1.52"
+=======
+        "api_version": "1.1.58"
+>>>>>>> upstream/bleeding-edge
     }
 }

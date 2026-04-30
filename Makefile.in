@@ -27,9 +27,15 @@ SHELL := /bin/bash
 TARGET_ARCH ?= x86_64
 
 ifeq ($(TARGET_ARCH),x86_64)
+<<<<<<< HEAD
 	STEAMRT_IMAGE ?= registry.gitlab.steamos.cloud/proton/sniper/sdk:3.0.20250519.130773-0
 else ifeq ($(TARGET_ARCH),arm64)
 	STEAMRT_IMAGE ?= registry.gitlab.steamos.cloud/proton/steamrt4/sdk/arm64-llvm:4.0.20260119.200228-2
+=======
+	STEAMRT_IMAGE ?= registry.gitlab.steamos.cloud/proton/steamrt4/sdk/x86_64:4.0.20260331.220802-0
+else ifeq ($(TARGET_ARCH),arm64)
+	STEAMRT_IMAGE ?= registry.gitlab.steamos.cloud/proton/steamrt4/sdk/arm64-llvm:4.0.20260331.220802-0
+>>>>>>> upstream/bleeding-edge
 else
 	ARCHS := $(error Unknown TARGET_ARCH=$(TARGET_ARCH))
 endif
@@ -62,12 +68,6 @@ CFLAGS += -ffile-prefix-map=$(CCACHE_BASEDIR)=.
 
 ifneq ($(SUPPRESS_WARNINGS),)
 	CFLAGS += -w
-endif
-
-ifeq ($(ENABLE_BEAR),1)
-	BEAR := bear --append --
-else
-	BEAR :=
 endif
 
 $(DST_DIR):
@@ -158,6 +158,24 @@ $(eval $(call rules-source,dav1d,$(SRCDIR)/dav1d))
 $(eval $(call rules-meson,dav1d,i386,unix))
 $(eval $(call rules-meson,dav1d,x86_64,unix))
 $(eval $(call rules-meson,dav1d,aarch64,unix))
+<<<<<<< HEAD
+=======
+
+
+##
+## libsoup
+##
+
+LIBSOUP_MESON_ARGS = \
+	-Ddocs=disabled \
+	-Dautobahn=disabled \
+	-Dtls_check=false
+
+$(eval $(call rules-source,libsoup,$(SRCDIR)/libsoup))
+$(eval $(call rules-meson,libsoup,i386,unix))
+$(eval $(call rules-meson,libsoup,x86_64,unix))
+$(eval $(call rules-meson,libsoup,aarch64,unix))
+>>>>>>> upstream/bleeding-edge
 
 
 ##
@@ -262,7 +280,7 @@ GST_GOOD_MESON_ARGS := \
 	-Dsoup=enabled \
 	-Dorc=enabled
 
-GST_GOOD_DEPENDS = gst_orc gstreamer gst_base
+GST_GOOD_DEPENDS = gst_orc gstreamer gst_base libsoup
 GST_GOOD_HOST_DEPENDS = gst_orc
 
 $(eval $(call rules-source,gst_good,$(SRCDIR)/gstreamer/subprojects/gst-plugins-good/))
@@ -435,6 +453,8 @@ $(eval $(call rules-cmake,openxr,aarch64,unix))
 WINEOPENXR_LDFLAGS = -lopenxr_loader
 WINEOPENXR_DEPENDS = wine openxr
 
+WINEOPENXR_aarch64_PE_ARCHS = arm64ec x86_64
+
 $(eval $(call rules-source,wineopenxr,$(SRCDIR)/wineopenxr))
 $(eval $(call rules-makedep,wineopenxr,x86_64))
 $(eval $(call rules-makedep,wineopenxr,aarch64))
@@ -602,8 +622,12 @@ WINE_SOURCE_ARGS = \
 WINE_AUTOCONF_ARGS = \
   --enable-werror \
   --with-mingw=$(MINGW_TYPE) \
+<<<<<<< HEAD
   --disable-tests \
   --enable-build-id
+=======
+  --disable-tests
+>>>>>>> upstream/bleeding-edge
 
 WINE_x86_64_AUTOCONF_ARGS = \
   --enable-archs=$(call list-join,$(comma),x86_64 $(filter-out x86_64 $(unix_ARCHS),$(windows_ARCHS))) \
@@ -614,10 +638,14 @@ WINE_aarch64_AUTOCONF_ARGS = \
 
 WINE_i386_AUTOCONF_ARGS += \
   VKD3D_PE_CFLAGS="-I$(VULKAN_HEADERS_i386_DST)/include -I$(VKD3D_i386_DST)/include/vkd3d" \
+<<<<<<< HEAD
   VKD3D_PE_LIBS="-L$(VKD3D_i386_LIBDIR)/vkd3d/i386-windows -l:libvkd3d-1.dll -l:libvkd3d-shader-1.dll"
+=======
+  VKD3D_PE_LIBS="-L$(VKD3D_i386_LIBDIR)/vkd3d/i386-windows -l:libvkd3d-1.dll -l:libvkd3d-shader-1.dll -l:libvkd3d-utils-1.dll"
+>>>>>>> upstream/bleeding-edge
 WINE_x86_64_AUTOCONF_ARGS += \
   VKD3D_PE_CFLAGS="-I$(VULKAN_HEADERS_x86_64_DST)/include -I$(VKD3D_x86_64_DST)/include/vkd3d" \
-  VKD3D_PE_LIBS="-L$(VKD3D_x86_64_LIBDIR)/vkd3d/x86_64-windows -l:libvkd3d-1.dll -l:libvkd3d-shader-1.dll"
+  VKD3D_PE_LIBS="-L$(VKD3D_x86_64_LIBDIR)/vkd3d/x86_64-windows -l:libvkd3d-1.dll -l:libvkd3d-shader-1.dll -l:libvkd3d-utils-1.dll"
 
 WINE_DEPENDS = gst_orc gstreamer gst_base ffmpeg openfst kaldi vosk
 WINE_i386_DEPENDS = vkd3d
@@ -645,39 +673,30 @@ $(OBJ)/.wine-post-source:
 	touch $@
 
 $(OBJ)/.wine-x86_64-post-build:
-ifeq ($(findstring i386,$(unix_ARCHS)),)
 	mkdir -p $(DST_DIR)/bin
 	$(call install-strip,$(WINE_x86_64_DST)/bin/wine,$(DST_DIR)/bin)
-	$(call install-strip,$(WINE_x86_64_DST)/bin/wine-preloader,$(DST_DIR)/bin)
 	$(call install-strip,$(WINE_x86_64_DST)/bin/wineserver,$(DST_DIR)/bin)
+	mkdir -p $(DST_DIR)/lib/wine/i386-unix
+	$(call install-strip,$(WINE_x86_64_DST)/lib/wine/x86_64-unix/wine64,$(DST_DIR)/lib/wine/i386-unix)
+	$(call install-strip,$(WINE_x86_64_DST)/lib/wine/x86_64-unix/wine64-preloader,$(DST_DIR)/lib/wine/i386-unix)
 	cp -a $(WINE_x86_64_DST)/bin/msidb $(DST_DIR)/bin/
-else
-	cp -a $(WINE_x86_64_DST)/bin/wine64 $(WINE_x86_64_DST)/bin/wine
-	cp -a $(WINE_x86_64_DST)/bin/wine64-preloader $(WINE_x86_64_DST)/bin/wine-preloader
-
-	mkdir -p $(DST_DIR)/bin
-	$(call install-strip,$(WINE_x86_64_DST)/bin/wine64,$(DST_DIR)/bin)
-	$(call install-strip,$(WINE_x86_64_DST)/bin/wine64-preloader,$(DST_DIR)/bin)
-	$(call install-strip,$(WINE_x86_64_DST)/bin/wineserver,$(DST_DIR)/bin)
-	cp -a $(WINE_x86_64_DST)/bin/msidb $(DST_DIR)/bin/
-
-	mkdir -p $(DST_DIR)/bin-wow64
-	$(call install-strip,$(WINE_x86_64_DST)/bin/wine,$(DST_DIR)/bin-wow64)
-	$(call install-strip,$(WINE_x86_64_DST)/bin/wine-preloader,$(DST_DIR)/bin-wow64)
-	$(call install-strip,$(WINE_x86_64_DST)/bin/wineserver,$(DST_DIR)/bin-wow64)
-	cp -a $(WINE_x86_64_DST)/bin/msidb $(DST_DIR)/bin-wow64/
-endif
 
 	mkdir -p $(DST_DIR)/share
 	cp -a $(WINE_x86_64_DST)/share/wine $(DST_DIR)/share
 	touch $@
 
-$(OBJ)/.wine-i386-post-build:
-	mkdir -p $(DST_DIR)/bin
-	$(call install-strip,$(WINE_i386_DST)/bin/wine,$(DST_DIR)/bin)
-	$(call install-strip,$(WINE_i386_DST)/bin/wine-preloader,$(DST_DIR)/bin)
+$(OBJ)/.wine-aarch64-post-build:
+	mkdir -p $(DST_DIR)/bin-arm64
+	$(call install-strip,$(WINE_aarch64_DST)/bin/wine,$(DST_DIR)/bin-arm64)
+	$(call install-strip,$(WINE_aarch64_DST)/bin/wineserver,$(DST_DIR)/bin-arm64)
+	cp -a $(WINE_aarch64_DST)/bin/msidb $(DST_DIR)/bin-arm64/
+ifeq ($(findstring x86_64,$(unix_ARCHS)),)
+	mkdir -p $(DST_DIR)/share
+	cp -a $(WINE_aarch64_DST)/share/wine $(DST_DIR)/share
+endif
 	touch $@
 
+<<<<<<< HEAD
 $(OBJ)/.wine-aarch64-post-build:
 	mkdir -p $(DST_DIR)/bin-arm64
 	$(call install-strip,$(WINE_aarch64_DST)/bin/wine,$(DST_DIR)/bin-arm64)
@@ -691,6 +710,8 @@ endif
 	touch $@
 
 
+=======
+>>>>>>> upstream/bleeding-edge
 ##
 ## vrclient
 ##
@@ -701,6 +722,7 @@ $(eval $(call rules-source,vrclient,$(SRCDIR)/vrclient_x64))
 $(eval $(call rules-makedep,vrclient,i386))
 $(eval $(call rules-makedep,vrclient,x86_64))
 $(eval $(call rules-makedep,vrclient,aarch64))
+<<<<<<< HEAD
 
 $(OBJ)/.vrclient-x86_64-post-build:
 	cp -fa $(VRCLIENT_x86_64_DST)/lib/wine/x86_64-unix/vrclient_x64.so $(DST_DIR)/lib/wine/x86_64-unix/vrclient.so
@@ -709,6 +731,8 @@ $(OBJ)/.vrclient-x86_64-post-build:
 $(OBJ)/.vrclient-aarch64-post-build:
 	cp -fa $(VRCLIENT_aarch64_DST)/lib/wine/aarch64-unix/vrclient_x64.so $(DST_DIR)/lib/wine/aarch64-unix/vrclient.so
 	touch $@
+=======
+>>>>>>> upstream/bleeding-edge
 
 
 ##
@@ -809,16 +833,20 @@ $(OBJ)/.vkd3d-x86_64-post-build: $(OBJ)/.wine-$(HOST_ARCH)-tools
 	mkdir -p $(VKD3D_x86_64_LIBDIR)/vkd3d/x86_64-windows
 	$(call make-builtin,$(VKD3D_x86_64_DST)/bin/libvkd3d-1.dll)
 	$(call make-builtin,$(VKD3D_x86_64_DST)/bin/libvkd3d-shader-1.dll)
+	$(call make-builtin,$(VKD3D_x86_64_DST)/bin/libvkd3d-utils-1.dll)
 	cp $(VKD3D_x86_64_DST)/bin/libvkd3d-1.dll $(VKD3D_x86_64_LIBDIR)/vkd3d/x86_64-windows
 	cp $(VKD3D_x86_64_DST)/bin/libvkd3d-shader-1.dll $(VKD3D_x86_64_LIBDIR)/vkd3d/x86_64-windows
+	cp $(VKD3D_x86_64_DST)/bin/libvkd3d-utils-1.dll $(VKD3D_x86_64_LIBDIR)/vkd3d/x86_64-windows
 	touch $@
 
 $(OBJ)/.vkd3d-i386-post-build: $(OBJ)/.wine-$(HOST_ARCH)-tools
 	mkdir -p $(VKD3D_i386_LIBDIR)/vkd3d/i386-windows
 	$(call make-builtin,$(VKD3D_i386_DST)/bin/libvkd3d-1.dll)
 	$(call make-builtin,$(VKD3D_i386_DST)/bin/libvkd3d-shader-1.dll)
+	$(call make-builtin,$(VKD3D_i386_DST)/bin/libvkd3d-utils-1.dll)
 	cp $(VKD3D_i386_DST)/bin/libvkd3d-1.dll $(VKD3D_i386_LIBDIR)/vkd3d/i386-windows
 	cp $(VKD3D_i386_DST)/bin/libvkd3d-shader-1.dll $(VKD3D_i386_LIBDIR)/vkd3d/i386-windows
+	cp $(VKD3D_i386_DST)/bin/libvkd3d-utils-1.dll $(VKD3D_i386_LIBDIR)/vkd3d/i386-windows
 	touch $@
 
 
@@ -1229,7 +1257,11 @@ all-dist: $(OBJ)/.gecko-i386-dist $(OBJ)/.gecko-x86_64-dist
 ## wine-mono
 ##
 
+<<<<<<< HEAD
 WINEMONO_VER := 10.4.1
+=======
+WINEMONO_VER := 11.0.0
+>>>>>>> upstream/bleeding-edge
 WINEMONO_TARBALL := wine-mono-$(WINEMONO_VER)-x86.tar.xz
 DIST_WINEMONO_DIR := $(DST_DIR)/share/wine/mono
 DIST_WINEMONO := $(OBJ)/.wine-mono-dist
@@ -1253,7 +1285,11 @@ all-dist: $(DIST_WINEMONO)
 ## xalia
 ##
 
+<<<<<<< HEAD
 XALIA_VER := 0.4.8
+=======
+XALIA_VER := 0.4.9
+>>>>>>> upstream/bleeding-edge
 XALIA_ZIP := xalia-$(XALIA_VER)-net48-mono.zip
 DIST_XALIA_DIR := $(DST_DIR)/share/xalia
 DIST_XALIA := $(OBJ)/.xalia-dist
@@ -1463,10 +1499,10 @@ redist: all
 .PHONY: module32 module64 module
 
 module32: | all-source wine-i386-configure
-	+$(BEAR) $(MAKE) -j$(J) $(filter -j%,$(MAKEFLAGS)) $(MFLAGS) $(MAKEOVERRIDES) -C $(WINE_i386_OBJ)/dlls/$(module)
+	+$(MAKE) -j$(J) $(filter -j%,$(MAKEFLAGS)) $(MFLAGS) $(MAKEOVERRIDES) -C $(WINE_i386_OBJ)/dlls/$(module)
 
 module64: | all-source wine-x86_64-configure
-	+$(BEAR) $(MAKE) -j$(J) $(filter -j%,$(MAKEFLAGS)) $(MFLAGS) $(MAKEOVERRIDES) -C $(WINE_x86_64_OBJ)/dlls/$(module)
+	+$(MAKE) -j$(J) $(filter -j%,$(MAKEFLAGS)) $(MFLAGS) $(MAKEOVERRIDES) -C $(WINE_x86_64_OBJ)/dlls/$(module)
 
 module: | all-source wine-configure
 module: module32 module64

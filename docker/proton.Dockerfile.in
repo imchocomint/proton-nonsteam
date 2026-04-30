@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 FROM @PROTONSDK_URLBASE@/binutils-i686-linux-gnu:@BINUTILS_VERSION@ AS binutils-linux-i686
 FROM @PROTONSDK_URLBASE@/binutils-x86_64-linux-gnu:@BINUTILS_VERSION@ AS binutils-linux-x86_64
 FROM @PROTONSDK_URLBASE@/binutils-i686-w64-mingw32:@BINUTILS_VERSION@ AS binutils-mingw-i686
@@ -28,6 +29,9 @@ COPY --from=mingw-widl-i686       /opt/usr /usr
 COPY --from=mingw-widl-x86_64     /opt/usr /usr
 COPY --from=gcc-mingw-i686        /opt/usr /usr
 COPY --from=gcc-mingw-x86_64      /opt/usr /usr
+=======
+FROM @BASE_IMAGE@ AS base
+>>>>>>> upstream/bleeding-edge
 
 RUN wget -q @RUST_URLBASE@/@RUST_SOURCE_x86_64@ \
 && echo '@RUST_SHA256_x86_64@ @RUST_SOURCE_x86_64@' | sha256sum -c - \
@@ -47,7 +51,7 @@ RUN bash -c 'ls /opt/rust/bin/* | xargs -n1 -I{} ln -sf {} /usr/bin/'
 RUN bash -c 'mkdir -p /usr/lib/ccache && ls /usr/bin/{,*-}{cc,c++,gcc,g++}{,-[0-9]*} | sed -re s:/bin:/lib/ccache: | xargs -n1 ln -sf ../../bin/ccache'
 ENV PATH=/usr/lib/ccache:/usr/lib/gcc-14/bin:$PATH
 
-RUN apt-get install -y \
+RUN apt-get update && apt-get install -y \
   autoconf-archive \
   fontforge \
   fonttools \
@@ -63,6 +67,13 @@ RUN apt-get install -y \
   libjson-perl \
   yasm \
   nasm \
+  g++-mingw-w64-x86-64 \
+  gcc-mingw-w64-x86-64 \
+  binutils-mingw-w64-x86-64 \
+  g++-mingw-w64-i686 \
+  gcc-mingw-w64-i686 \
+  binutils-mingw-w64-i686 \
+  mingw-w64-tools \
 && rm -rf /opt/usr/share/doc /opt/usr/share/info /opt/usr/share/man \
 && rm -rf /var/lib/apt/lists/*
 
@@ -78,6 +89,7 @@ RUN cd /tmp \
 && cp ninja $(which ninja) \
 && cd / \
 && rm -rf /tmp/ninja-@NINJA_VERSION@
+<<<<<<< HEAD
 
 RUN cd /tmp \
 && wget -q @AFDKO_URLBASE@/@AFDKO_SOURCE@ \
@@ -91,6 +103,8 @@ RUN cd /tmp \
 && cp -f bin/* /usr/libexec/afdko/  \
 && cd / \
 && rm -rf /tmp/afdko-@AFDKO_VERSION@
+=======
+>>>>>>> upstream/bleeding-edge
 
 ENTRYPOINT ["/usr/bin/tini-static", "-s", "-g", "--"]
 
