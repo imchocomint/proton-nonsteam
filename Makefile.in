@@ -152,8 +152,6 @@ $(eval $(call rules-source,dav1d,$(SRCDIR)/dav1d))
 $(eval $(call rules-meson,dav1d,i386,unix))
 $(eval $(call rules-meson,dav1d,x86_64,unix))
 $(eval $(call rules-meson,dav1d,aarch64,unix))
-<<<<<<< HEAD
-=======
 
 
 ##
@@ -169,7 +167,6 @@ $(eval $(call rules-source,libsoup,$(SRCDIR)/libsoup))
 $(eval $(call rules-meson,libsoup,i386,unix))
 $(eval $(call rules-meson,libsoup,x86_64,unix))
 $(eval $(call rules-meson,libsoup,aarch64,unix))
->>>>>>> upstream/bleeding-edge
 
 
 ##
@@ -616,12 +613,8 @@ WINE_SOURCE_ARGS = \
 WINE_AUTOCONF_ARGS = \
   --enable-werror \
   --with-mingw=$(MINGW_TYPE) \
-<<<<<<< HEAD
   --disable-tests \
   --enable-build-id
-=======
-  --disable-tests
->>>>>>> upstream/bleeding-edge
 
 WINE_x86_64_AUTOCONF_ARGS = \
   --enable-archs=$(call list-join,$(comma),x86_64 $(filter-out x86_64 $(unix_ARCHS),$(windows_ARCHS))) \
@@ -632,11 +625,7 @@ WINE_aarch64_AUTOCONF_ARGS = \
 
 WINE_i386_AUTOCONF_ARGS += \
   VKD3D_PE_CFLAGS="-I$(VULKAN_HEADERS_i386_DST)/include -I$(VKD3D_i386_DST)/include/vkd3d" \
-<<<<<<< HEAD
-  VKD3D_PE_LIBS="-L$(VKD3D_i386_LIBDIR)/vkd3d/i386-windows -l:libvkd3d-1.dll -l:libvkd3d-shader-1.dll"
-=======
   VKD3D_PE_LIBS="-L$(VKD3D_i386_LIBDIR)/vkd3d/i386-windows -l:libvkd3d-1.dll -l:libvkd3d-shader-1.dll -l:libvkd3d-utils-1.dll"
->>>>>>> upstream/bleeding-edge
 WINE_x86_64_AUTOCONF_ARGS += \
   VKD3D_PE_CFLAGS="-I$(VULKAN_HEADERS_x86_64_DST)/include -I$(VKD3D_x86_64_DST)/include/vkd3d" \
   VKD3D_PE_LIBS="-L$(VKD3D_x86_64_LIBDIR)/vkd3d/x86_64-windows -l:libvkd3d-1.dll -l:libvkd3d-shader-1.dll -l:libvkd3d-utils-1.dll"
@@ -690,22 +679,6 @@ ifeq ($(findstring x86_64,$(unix_ARCHS)),)
 endif
 	touch $@
 
-<<<<<<< HEAD
-$(OBJ)/.wine-aarch64-post-build:
-	mkdir -p $(DST_DIR)/bin-arm64
-	$(call install-strip,$(WINE_aarch64_DST)/bin/wine,$(DST_DIR)/bin-arm64)
-	$(call install-strip,$(WINE_aarch64_DST)/bin/wine-preloader,$(DST_DIR)/bin-arm64)
-	$(call install-strip,$(WINE_aarch64_DST)/bin/wineserver,$(DST_DIR)/bin-arm64)
-	cp -a $(WINE_aarch64_DST)/bin/msidb $(DST_DIR)/bin-arm64/
-ifeq ($(findstring x86_64,$(unix_ARCHS)),)
-	mkdir -p $(DST_DIR)/share
-	cp -a $(WINE_aarch64_DST)/share/wine $(DST_DIR)/share
-endif
-	touch $@
-
-
-=======
->>>>>>> upstream/bleeding-edge
 ##
 ## vrclient
 ##
@@ -716,17 +689,6 @@ $(eval $(call rules-source,vrclient,$(SRCDIR)/vrclient_x64))
 $(eval $(call rules-makedep,vrclient,i386))
 $(eval $(call rules-makedep,vrclient,x86_64))
 $(eval $(call rules-makedep,vrclient,aarch64))
-<<<<<<< HEAD
-
-$(OBJ)/.vrclient-x86_64-post-build:
-	cp -fa $(VRCLIENT_x86_64_DST)/lib/wine/x86_64-unix/vrclient_x64.so $(DST_DIR)/lib/wine/x86_64-unix/vrclient.so
-	touch $@
-
-$(OBJ)/.vrclient-aarch64-post-build:
-	cp -fa $(VRCLIENT_aarch64_DST)/lib/wine/aarch64-unix/vrclient_x64.so $(DST_DIR)/lib/wine/aarch64-unix/vrclient.so
-	touch $@
-=======
->>>>>>> upstream/bleeding-edge
 
 
 ##
@@ -1251,11 +1213,7 @@ all-dist: $(OBJ)/.gecko-i386-dist $(OBJ)/.gecko-x86_64-dist
 ## wine-mono
 ##
 
-<<<<<<< HEAD
-WINEMONO_VER := 10.4.1
-=======
 WINEMONO_VER := 11.0.0
->>>>>>> upstream/bleeding-edge
 WINEMONO_TARBALL := wine-mono-$(WINEMONO_VER)-x86.tar.xz
 DIST_WINEMONO_DIR := $(DST_DIR)/share/wine/mono
 DIST_WINEMONO := $(OBJ)/.wine-mono-dist
@@ -1279,11 +1237,7 @@ all-dist: $(DIST_WINEMONO)
 ## xalia
 ##
 
-<<<<<<< HEAD
-XALIA_VER := 0.4.8
-=======
 XALIA_VER := 0.4.9
->>>>>>> upstream/bleeding-edge
 XALIA_ZIP := xalia-$(XALIA_VER)-net48-mono.zip
 DIST_XALIA_DIR := $(DST_DIR)/share/xalia
 DIST_XALIA := $(OBJ)/.xalia-dist
