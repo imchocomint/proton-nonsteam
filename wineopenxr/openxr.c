@@ -30,11 +30,6 @@ static struct {
 
 static XrResult (*p_xrConvertTimespecTimeToTimeKHR)(XrInstance, const struct timespec *, XrTime *);
 static XrResult (*p_xrConvertTimeToTimespecTimeKHR)(XrInstance, XrTime, struct timespec *);
-<<<<<<< HEAD
-
-struct openxr_instance_funcs g_xr_host_instance_dispatch_table;
-=======
->>>>>>> upstream/bleeding-edge
 
 struct openxr_instance_funcs g_xr_host_instance_dispatch_table;
 

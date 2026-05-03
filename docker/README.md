@@ -16,24 +16,15 @@ Just run `make proton` in this directory. To use Podman instead run `make
 DOCKER=podman proton`.
 
 This will create container image tagged both as
-<<<<<<< HEAD
-`registry.gitlab.steamos.cloud/proton/sniper/sdk:$SOME_VERSION-0-dev` and
-`registry.gitlab.steamos.cloud/proton/sniper/sdk:latest`
-=======
 `registry.gitlab.steamos.cloud/proton/steamrt4/sdk:$SOME_VERSION-0-dev` and
 `registry.gitlab.steamos.cloud/proton/steamrt4/sdk:latest`
->>>>>>> upstream/bleeding-edge
 
 Look for lines `successfully tagged` at the bottom of the output.
 
 To use the just built container image for Proton build you can pass the following argument
 to `./configure.sh` (assuming you are using the same container engine, Podman or
 Docker, for both):
-<<<<<<< HEAD
-`--proton-sdk-image=registry.gitlab.steamos.cloud/proton/sniper/sdk:latest`
-=======
 `--proton-sdk-image=registry.gitlab.steamos.cloud/proton/steamrt4/sdk:latest`
->>>>>>> upstream/bleeding-edge
 
 
 ARM64 Containers
@@ -48,11 +39,7 @@ make BUILD_ARCH=aarch64 proton-llvm
 To use:
 
 ```
-<<<<<<< HEAD
-$PROTON_SRC/configure.sh --proton-sdk-image=registry.gitlab.steamos.cloud/proton/sniper/sdk/arm64:latest
-=======
 $PROTON_SRC/configure.sh --proton-sdk-image=registry.gitlab.steamos.cloud/proton/steamrt4/sdk/arm64:latest
->>>>>>> upstream/bleeding-edge
 ```
 
 

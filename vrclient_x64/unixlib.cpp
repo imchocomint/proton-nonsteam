@@ -7,12 +7,6 @@
 #include <dlfcn.h>
 #include <pthread.h>
 #include <stdlib.h>
-<<<<<<< HEAD
-
-#define WINE_VK_HOST
-#include <vulkan/vulkan.h>
-=======
->>>>>>> upstream/bleeding-edge
 
 #if 0
 #pragma makedep unix

@@ -476,11 +476,8 @@
 #define XR_KHR_MAINTENANCE1_EXTENSION_NAME "XR_KHR_maintenance1"
 #define XR_KHR_generic_controller_SPEC_VERSION 1
 #define XR_KHR_GENERIC_CONTROLLER_EXTENSION_NAME "XR_KHR_generic_controller"
-<<<<<<< HEAD
-=======
 #define XR_ANDROID_scene_meshing_SPEC_VERSION 3
 #define XR_ANDROID_SCENE_MESHING_EXTENSION_NAME "XR_ANDROID_scene_meshing"
->>>>>>> upstream/bleeding-edge
 #define XR_EXT_spatial_entity_SPEC_VERSION 1
 #define XR_EXT_SPATIAL_ENTITY_EXTENSION_NAME "XR_EXT_spatial_entity"
 #define XR_EXT_spatial_plane_tracking_SPEC_VERSION 1
@@ -523,11 +520,7 @@
 #define XR_VERSION_PATCH(version) (uint32_t)((uint64_t)(version) & 0xffffffffULL)
 
 
-<<<<<<< HEAD
-#define XR_CURRENT_API_VERSION XR_MAKE_VERSION(1, 1, 52)
-=======
 #define XR_CURRENT_API_VERSION XR_MAKE_VERSION(1, 1, 58)
->>>>>>> upstream/bleeding-edge
 
 
 #define XR_API_VERSION_1_0 XR_MAKE_VERSION(1, 0, XR_VERSION_PATCH(XR_CURRENT_API_VERSION))

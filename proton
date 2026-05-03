@@ -41,11 +41,7 @@ from random import randrange
 #To enable debug logging, copy "user_settings.sample.py" to "user_settings.py"
 #and edit it if needed.
 
-<<<<<<< HEAD
-CURRENT_PREFIX_VERSION="10.1000-200"
-=======
 CURRENT_PREFIX_VERSION="11.0-100"
->>>>>>> upstream/bleeding-edge
 
 PFX="Proton: "
 ld_path_var = "LD_LIBRARY_PATH"
@@ -543,14 +539,6 @@ class Proton:
             self.host_pe_arch = "aarch64-windows"
             self.default_pfx_dir = self.path("files/share/default_pfx_arm64/")
             self.bin_dir = self.path("files/bin-arm64/")
-<<<<<<< HEAD
-            self.wine_bin = self.bin_dir + "wine"
-            self.wine64_bin = self.bin_dir + "wine"
-            self.wineserver_bin = self.bin_dir + "wineserver"
-        elif os.environ.get("PROTON_USE_WOW64", None) == "1" or not file_exists(self.wine_bin, follow_symlinks=True):
-            self.bin_dir = self.path("files/bin-wow64/")
-=======
->>>>>>> upstream/bleeding-edge
             self.wine_bin = self.bin_dir + "wine"
             self.wineserver_bin = self.bin_dir + "wineserver"
 
@@ -1310,58 +1298,6 @@ def default_compat_config():
             ret.add("hideintelgpu")
 
         if appid in [
-<<<<<<< HEAD
-                "1341820", #As Dusk falls
-                "280790", #Creativerse
-                "306130", #The Elder Scrolls Online
-                "24010", #Train Simulator
-                "374320", #DARK SOULS III
-                "65500", #Aura: Fate of the Ages
-                "4000", #Garry's Mod
-                "383120", #Empyrion - Galactic Survival
-                "2371630", #Sword Art Online: Integral Factor
-                "460790", #Bayonetta
-                "273590", #Descent 3
-                "834530", #Yakuza Kiwami
-                "2526380", #Sword of Convallaria
-                "1088710", #Yakuza 3 Remastered
-                "1105500", #Yakuza 4 Remastered
-                "714010", #Aimlabs
-                "2249070", #Strip Fighter ZERO
-                "1845910", #Dragon Age: The Veilguard
-                "6030", #Star Wars - Jedi Knight II: Jedi Outcast
-                "2842040", #Star Wars Outlaws
-                "245300", #Disney Epic Mickey 2: The Power of Two
-                "2594920", #Atelier Resleriana: Forgotten Alchemy and the Polar Night Liberator
-                "2586520", #Atelier Resleriana [JP]
-                "3209830", #Stronghold Crusader: Definitive Edition Demo
-                "3024040", #Stronghold Crusader: Definitive Edition
-                "2433890", #Stronghold: Definitive Edition Demo
-                "2140020", #Stronghold: Definitive Edition
-                "3314070", #The Sims 2 Legacy Collection
-                "2709570", #Supermarket Together
-                "2623190", #The Elder Scrolls IV: Oblivion Remastered
-                "2139460", #Once Human
-                "632360", #Risk of Rain 2
-                "2531310", #The Last of Us Part II Remastered
-                "2564460", #Banter
-                "2680010", #The First Berserker: Khazan
-                "3438330", #Firefly Village Demo
-                "3393740", #Firefly Village
-                "2840770", #Avatar: Frontiers of Pandora
-                "429660", #Tales of Berseria
-                "1286220", #Sea Power
-                "2827230", #Wild Assault
-                "3159330", #Assassin's Creed Shadows
-                "367500", #Dragon's Dogma: Dark Arisen
-                "1890220", #Figmin XR
-                "2058180", #Judgment
-                ]:
-            ret.add("gamedrive")
-
-        if appid in [
-=======
->>>>>>> upstream/bleeding-edge
                 "202990", #Call of Duty: Black Ops II - Multiplayer
                 "212910", #Call of Duty: Black Ops II - Zombies
                 "499100", #Dark Parables: The Exiled Prince Collector's Edition (499100)
@@ -1463,31 +1399,16 @@ def default_compat_config():
         appid = os.environ["STEAM_COMPAT_APP_ID"]
 
         if appid in [
-<<<<<<< HEAD
-=======
                 "247660", #Deadly Premonition: The Director's Cut
->>>>>>> upstream/bleeding-edge
                 "1026680", #FINAL FANTASY VIII - REMASTERED
                 "3280350", #DEATH STRANDING 2: ON THE BEACH
                 "3513350", #Wuthering Waves
                 "3837340", #FINAL FANTASY VII
-<<<<<<< HEAD
-=======
                 "337000", #Deus Ex: Mankind Divided
->>>>>>> upstream/bleeding-edge
                 ]:
             ret.add("noxalia")
 
         if appid in [
-<<<<<<< HEAD
-                "255960", #Bad Mojo Redux
-                "2471120", #Rocket Jockey
-                ]:
-            ret.add("gamedrive")
-
-        if appid in [
-=======
->>>>>>> upstream/bleeding-edge
                 "275850", #No Man's Sky
                 "2012840", #Portal with RTX
                 ]:
@@ -1859,19 +1780,11 @@ class Session:
             self.env["OPENSSL_ia32cap"] = "~0x20000000"
 
         if os.environ.get("SteamGameId", 0) in [
-<<<<<<< HEAD
-                "500810",
-                "4249100",
-                "4249110",
-                "4249130",
-                "4249150",
-=======
                 "500810", #Arcanum
                 "4249100", #Resident Evil (1996)
                 "4249110", #Resident Evil 2 (1998)
                 "4249130", #Dino Crisis
                 "4249150", #Breath of Fire IV
->>>>>>> upstream/bleeding-edge
                 ]:
             self.dlloverrides["ddraw"] = "n,b"
 
@@ -1969,12 +1882,9 @@ class Session:
             self.env["PROTON_DISABLE_HIDRAW"] = "0x054C/0x05C4,0x054C/0x09CC,0x054C/0x0BA0,0x054C/0x0CE6,0x054C/0x0DF2"
 
 
-<<<<<<< HEAD
-=======
         if "__GLVND_DISALLOW_PATCHING" not in self.env:
             self.env["__GLVND_DISALLOW_PATCHING"] = "1"
 
->>>>>>> upstream/bleeding-edge
         # NVIDIA software may check for the "DriverStore" by querying the
         # NGXCore\NGXPath registry key via `D3DDDI_QUERYREGISTRY_SERVICEKEY` for
         # a given adapter. In the case where this path cannot be found, the
