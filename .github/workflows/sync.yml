@@ -40,7 +40,8 @@ jobs:
     - name: Resolve .gitmodules conflicts
       run: |
         # Use upstream's .gitmodules if conflicts exist
-        git checkout upstream/bleeding-edge -- .gitmodules
+        # git checkout upstream/bleeding-edge -- .gitmodules
+        echo "aborted"
     - name: Submodules
       run: |
         git submodule sync
