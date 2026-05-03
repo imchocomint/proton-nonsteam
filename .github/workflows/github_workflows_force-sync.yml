@@ -51,6 +51,17 @@ jobs:
           fi
         done
 
+    - name: Replace .gitmodules with custom version
+      run: |
+        # Check if custom .gitmodules exists in .github folder
+        if [ -f ".github/.gitmodules" ]; then
+          echo "Found custom .gitmodules in .github folder, using it instead of upstream version"
+          cp .github/.gitmodules .gitmodules
+          git add .gitmodules
+        else
+          echo "No custom .gitmodules found in .github folder, using upstream version"
+        fi
+
     - name: Update submodules
       run: |
         # Remove any conflicted submodule entries
@@ -93,4 +104,5 @@ jobs:
         echo "- Branch: bleeding-edge" >> $GITHUB_STEP_SUMMARY
         echo "- Source: upstream/bleeding-edge" >> $GITHUB_STEP_SUMMARY
         echo "- Protected folder: .github/" >> $GITHUB_STEP_SUMMARY
+        echo "- Custom .gitmodules: $([ -f .github/.gitmodules ] && echo 'used' || echo 'not found')" >> $GITHUB_STEP_SUMMARY
         echo "- Timestamp: $(date -u +'%Y-%m-%dT%H:%M:%SZ')" >> $GITHUB_STEP_SUMMARY
