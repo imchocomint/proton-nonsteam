@@ -1341,6 +1341,7 @@ def default_compat_config():
                 "435150", #Divinity: Original Sin 2 - Definitive Edition
                 "2176900", #Fablecraft
                 "2853730", #Skull and Bones
+                "1761380", #Otherworld Legends (just to disable nvcuda.dll)
                 ]:
             ret.add("disablenvapi")
 
@@ -1357,6 +1358,7 @@ def default_compat_config():
                 "2067160", #Simulakros
                 "2621010", #Simulakros Demo
                 "368500", #Assassin's Creed Syndicate
+                "1524630", #KeepUp Survival
                 ]:
             try:
                 with open('/proc/modules') as f:
@@ -1401,7 +1403,6 @@ def default_compat_config():
         if appid in [
                 "247660", #Deadly Premonition: The Director's Cut
                 "1026680", #FINAL FANTASY VIII - REMASTERED
-                "3280350", #DEATH STRANDING 2: ON THE BEACH
                 "3513350", #Wuthering Waves
                 "3837340", #FINAL FANTASY VII
                 "337000", #Deus Ex: Mankind Divided
@@ -1884,6 +1885,10 @@ class Session:
 
         if "__GLVND_DISALLOW_PATCHING" not in self.env:
             self.env["__GLVND_DISALLOW_PATCHING"] = "1"
+
+        if (os.environ.get("SteamGameId", 0) == "1183470"): # Imperiums: Greek Wars
+            self.env.setdefault("WINE_MONO_HIDETYPES", "1")
+        self.env.setdefault("WINE_MONO_HIDETYPES", "0")
 
         # NVIDIA software may check for the "DriverStore" by querying the
         # NGXCore\NGXPath registry key via `D3DDDI_QUERYREGISTRY_SERVICEKEY` for
