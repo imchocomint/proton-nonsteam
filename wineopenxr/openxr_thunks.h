@@ -1,6 +1,6 @@
-/* Automatically generated from Vulkan xr.xml; DO NOT EDIT!
+/* Automatically generated from OpenXR xr.xml; DO NOT EDIT!
  *
- * This file is generated from Vulkan xr.xml file covered
+ * This file is generated from OpenXR xr.xml file covered
  * by the following copyright and permission notice:
  *
  * Copyright (c) 2017-2026 The Khronos Group Inc.
@@ -30,11 +30,13 @@ XrResult wine_xrConvertWin32PerformanceCounterToTimeKHR(XrInstance instance, con
 XrResult wine_xrCreateInstance(const XrInstanceCreateInfo *createInfo, XrInstance *instance);
 XrResult wine_xrCreateSession(XrInstance instance, const XrSessionCreateInfo *createInfo, XrSession *session);
 XrResult wine_xrCreateSwapchain(XrSession session, const XrSwapchainCreateInfo *createInfo, XrSwapchain *swapchain);
+XrResult wine_xrDestroySession(XrSession session);
 XrResult wine_xrEnumerateInstanceExtensionProperties(const char *layerName, uint32_t propertyCapacityInput, uint32_t *propertyCountOutput, XrExtensionProperties *properties);
 XrResult wine_xrGetVulkanGraphicsDevice2KHR(XrInstance instance, const XrVulkanGraphicsDeviceGetInfoKHR *getInfo, VkPhysicalDevice *vulkanPhysicalDevice);
 XrResult wine_xrGetVulkanGraphicsDeviceKHR(XrInstance instance, XrSystemId systemId, VkInstance vkInstance, VkPhysicalDevice *vkPhysicalDevice);
 XrResult wine_xrGetVulkanInstanceExtensionsKHR(XrInstance instance, XrSystemId systemId, uint32_t bufferCapacityInput, uint32_t *bufferCountOutput, char *buffer);
 
+<<<<<<< HEAD
 /* For use by xrInstance and children */
 struct openxr_instance_funcs
 {
@@ -500,8 +502,9 @@ struct openxr_instance_funcs
     XrResult (*p_xrWaitSwapchainImage)(XrSwapchain, const XrSwapchainImageWaitInfo *);
 };
 
+=======
+>>>>>>> upstream/bleeding-edge
 #define ALL_XR_INSTANCE_FUNCS() \
-    USE_XR_FUNC(xrAcquireEnvironmentDepthImageMETA) \
     USE_XR_FUNC(xrAcquireSwapchainImage) \
     USE_XR_FUNC(xrAddTrackableImageDatabaseANDROID) \
     USE_XR_FUNC(xrAllocateWorldMeshBufferML) \
@@ -511,12 +514,17 @@ struct openxr_instance_funcs
     USE_XR_FUNC(xrBeginFrame) \
     USE_XR_FUNC(xrBeginPlaneDetectionEXT) \
     USE_XR_FUNC(xrBeginSession) \
+    USE_XR_FUNC(xrBeginSpatialContainerRenderingEXT) \
     USE_XR_FUNC(xrCancelFutureEXT) \
     USE_XR_FUNC(xrCaptureSceneAsyncBD) \
     USE_XR_FUNC(xrCaptureSceneCompleteBD) \
     USE_XR_FUNC(xrChangeVirtualKeyboardTextContextMETA) \
+    USE_XR_FUNC(xrCheckVpsAvailabilityAsyncANDROID) \
+    USE_XR_FUNC(xrCheckVpsAvailabilityCompleteANDROID) \
     USE_XR_FUNC(xrClearSpatialAnchorStoreMSFT) \
     USE_XR_FUNC(xrComputeNewSceneMSFT) \
+    USE_XR_FUNC(xrConvertTimeToWin32PerformanceCounterKHR) \
+    USE_XR_FUNC(xrConvertWin32PerformanceCounterToTimeKHR) \
     USE_XR_FUNC(xrCreateAction) \
     USE_XR_FUNC(xrCreateActionSet) \
     USE_XR_FUNC(xrCreateActionSpace) \
@@ -527,11 +535,15 @@ struct openxr_instance_funcs
     USE_XR_FUNC(xrCreateBodyTrackerFB) \
     USE_XR_FUNC(xrCreateBodyTrackerHTC) \
     USE_XR_FUNC(xrCreateDeviceAnchorPersistenceANDROID) \
+<<<<<<< HEAD
     USE_XR_FUNC(xrCreateEnvironmentDepthProviderMETA) \
     USE_XR_FUNC(xrCreateEnvironmentDepthSwapchainMETA) \
     USE_XR_FUNC(xrCreateEnvironmentRaycasterAsyncMETA) \
     USE_XR_FUNC(xrCreateEnvironmentRaycasterCompleteMETA) \
+=======
+>>>>>>> upstream/bleeding-edge
     USE_XR_FUNC(xrCreateExportedLocalizationMapML) \
+    USE_XR_FUNC(xrCreateEyeTrackerANDROID) \
     USE_XR_FUNC(xrCreateEyeTrackerFB) \
     USE_XR_FUNC(xrCreateFaceTracker2FB) \
     USE_XR_FUNC(xrCreateFaceTrackerANDROID) \
@@ -541,9 +553,12 @@ struct openxr_instance_funcs
     USE_XR_FUNC(xrCreateFacialTrackerHTC) \
     USE_XR_FUNC(xrCreateFoveationProfileFB) \
     USE_XR_FUNC(xrCreateGeometryInstanceFB) \
+    USE_XR_FUNC(xrCreateGeospatialAnchorANDROID) \
+    USE_XR_FUNC(xrCreateGeospatialTrackerANDROID) \
     USE_XR_FUNC(xrCreateHandMeshSpaceMSFT) \
     USE_XR_FUNC(xrCreateHandTrackerEXT) \
     USE_XR_FUNC(xrCreateKeyboardSpaceFB) \
+    USE_XR_FUNC(xrCreateLightEstimatorANDROID) \
     USE_XR_FUNC(xrCreateMarkerDetectorML) \
     USE_XR_FUNC(xrCreateMarkerSpaceML) \
     USE_XR_FUNC(xrCreateMarkerSpaceVARJO) \
@@ -584,6 +599,11 @@ struct openxr_instance_funcs
     USE_XR_FUNC(xrCreateSpatialAnchorsCompleteML) \
     USE_XR_FUNC(xrCreateSpatialAnchorsStorageML) \
     USE_XR_FUNC(xrCreateSpatialAudioRendererBD) \
+<<<<<<< HEAD
+=======
+    USE_XR_FUNC(xrCreateSpatialContainerEXT) \
+    USE_XR_FUNC(xrCreateSpatialContainerSpaceEXT) \
+>>>>>>> upstream/bleeding-edge
     USE_XR_FUNC(xrCreateSpatialContextAsyncEXT) \
     USE_XR_FUNC(xrCreateSpatialContextCompleteEXT) \
     USE_XR_FUNC(xrCreateSpatialDiscoverySnapshotAsyncEXT) \
@@ -591,15 +611,18 @@ struct openxr_instance_funcs
     USE_XR_FUNC(xrCreateSpatialEntityAnchorBD) \
     USE_XR_FUNC(xrCreateSpatialEntityFromIdEXT) \
     USE_XR_FUNC(xrCreateSpatialGraphNodeSpaceMSFT) \
+    USE_XR_FUNC(xrCreateSpatialImageTrackingDatabaseAsyncEXT) \
+    USE_XR_FUNC(xrCreateSpatialImageTrackingDatabaseCompleteEXT) \
     USE_XR_FUNC(xrCreateSpatialPersistenceContextAsyncEXT) \
     USE_XR_FUNC(xrCreateSpatialPersistenceContextCompleteEXT) \
     USE_XR_FUNC(xrCreateSpatialRaycastSnapshotANDROID) \
     USE_XR_FUNC(xrCreateSpatialUpdateSnapshotEXT) \
+    USE_XR_FUNC(xrCreateSurfaceAnchorAsyncANDROID) \
+    USE_XR_FUNC(xrCreateSurfaceAnchorCompleteANDROID) \
     USE_XR_FUNC(xrCreateSwapchain) \
     USE_XR_FUNC(xrCreateTrackableImageDatabaseAsyncANDROID) \
     USE_XR_FUNC(xrCreateTrackableImageDatabaseCompleteANDROID) \
     USE_XR_FUNC(xrCreateTrackableTrackerANDROID) \
-    USE_XR_FUNC(xrCreateTriangleMeshFB) \
     USE_XR_FUNC(xrCreateVirtualKeyboardMETA) \
     USE_XR_FUNC(xrCreateVirtualKeyboardSpaceMETA) \
     USE_XR_FUNC(xrCreateVulkanDeviceKHR) \
@@ -615,10 +638,14 @@ struct openxr_instance_funcs
     USE_XR_FUNC(xrDestroyBodyTrackerFB) \
     USE_XR_FUNC(xrDestroyBodyTrackerHTC) \
     USE_XR_FUNC(xrDestroyDeviceAnchorPersistenceANDROID) \
+<<<<<<< HEAD
     USE_XR_FUNC(xrDestroyEnvironmentDepthProviderMETA) \
     USE_XR_FUNC(xrDestroyEnvironmentDepthSwapchainMETA) \
     USE_XR_FUNC(xrDestroyEnvironmentRaycasterMETA) \
+=======
+>>>>>>> upstream/bleeding-edge
     USE_XR_FUNC(xrDestroyExportedLocalizationMapML) \
+    USE_XR_FUNC(xrDestroyEyeTrackerANDROID) \
     USE_XR_FUNC(xrDestroyEyeTrackerFB) \
     USE_XR_FUNC(xrDestroyFaceTracker2FB) \
     USE_XR_FUNC(xrDestroyFaceTrackerANDROID) \
@@ -628,8 +655,10 @@ struct openxr_instance_funcs
     USE_XR_FUNC(xrDestroyFacialTrackerHTC) \
     USE_XR_FUNC(xrDestroyFoveationProfileFB) \
     USE_XR_FUNC(xrDestroyGeometryInstanceFB) \
+    USE_XR_FUNC(xrDestroyGeospatialTrackerANDROID) \
     USE_XR_FUNC(xrDestroyHandTrackerEXT) \
     USE_XR_FUNC(xrDestroyInstance) \
+    USE_XR_FUNC(xrDestroyLightEstimatorANDROID) \
     USE_XR_FUNC(xrDestroyMarkerDetectorML) \
     USE_XR_FUNC(xrDestroyPassthroughColorLutMETA) \
     USE_XR_FUNC(xrDestroyPassthroughFB) \
@@ -656,18 +685,21 @@ struct openxr_instance_funcs
     USE_XR_FUNC(xrDestroySpatialAnchorStoreConnectionMSFT) \
     USE_XR_FUNC(xrDestroySpatialAnchorsStorageML) \
     USE_XR_FUNC(xrDestroySpatialAudioRendererBD) \
+<<<<<<< HEAD
+=======
+    USE_XR_FUNC(xrDestroySpatialContainerEXT) \
+>>>>>>> upstream/bleeding-edge
     USE_XR_FUNC(xrDestroySpatialContextEXT) \
     USE_XR_FUNC(xrDestroySpatialEntityEXT) \
     USE_XR_FUNC(xrDestroySpatialGraphNodeBindingMSFT) \
+    USE_XR_FUNC(xrDestroySpatialImageTrackingDatabaseEXT) \
     USE_XR_FUNC(xrDestroySpatialPersistenceContextEXT) \
     USE_XR_FUNC(xrDestroySpatialSnapshotEXT) \
     USE_XR_FUNC(xrDestroySwapchain) \
     USE_XR_FUNC(xrDestroyTrackableImageDatabaseANDROID) \
     USE_XR_FUNC(xrDestroyTrackableTrackerANDROID) \
-    USE_XR_FUNC(xrDestroyTriangleMeshFB) \
     USE_XR_FUNC(xrDestroyVirtualKeyboardMETA) \
     USE_XR_FUNC(xrDestroyWorldMeshDetectorML) \
-    USE_XR_FUNC(xrDiscoverSpacesMETA) \
     USE_XR_FUNC(xrDownloadSharedSpatialAnchorAsyncBD) \
     USE_XR_FUNC(xrDownloadSharedSpatialAnchorCompleteBD) \
     USE_XR_FUNC(xrEnableLocalizationEventsML) \
@@ -675,14 +707,22 @@ struct openxr_instance_funcs
     USE_XR_FUNC(xrEndAudioPeriodBD) \
     USE_XR_FUNC(xrEndFrame) \
     USE_XR_FUNC(xrEndSession) \
+    USE_XR_FUNC(xrEndSpatialContainerRenderingEXT) \
     USE_XR_FUNC(xrEnumerateApiLayerProperties) \
     USE_XR_FUNC(xrEnumerateBoundSourcesForAction) \
     USE_XR_FUNC(xrEnumerateColorSpacesFB) \
+    USE_XR_FUNC(xrEnumerateColorSpacesSONY) \
     USE_XR_FUNC(xrEnumerateDisplayRefreshRatesFB) \
     USE_XR_FUNC(xrEnumerateEnvironmentBlendModes) \
-    USE_XR_FUNC(xrEnumerateEnvironmentDepthSwapchainImagesMETA) \
+    USE_XR_FUNC(xrEnumerateEnvironmentTexturePixelFormatsBD) \
+    USE_XR_FUNC(xrEnumerateEnvironmentTextureResolutionsBD) \
+    USE_XR_FUNC(xrEnumerateEnvironmentTextureTransferTypesBD) \
     USE_XR_FUNC(xrEnumerateExternalCamerasOCULUS) \
     USE_XR_FUNC(xrEnumerateFacialSimulationModesBD) \
+<<<<<<< HEAD
+=======
+    USE_XR_FUNC(xrEnumerateInstanceExtensionProperties) \
+>>>>>>> upstream/bleeding-edge
     USE_XR_FUNC(xrEnumerateInteractionRenderModelIdsEXT) \
     USE_XR_FUNC(xrEnumeratePerformanceMetricsCounterPathsANDROID) \
     USE_XR_FUNC(xrEnumeratePerformanceMetricsCounterPathsMETA) \
@@ -701,10 +741,15 @@ struct openxr_instance_funcs
     USE_XR_FUNC(xrEnumerateSpatialCapabilityFeaturesEXT) \
     USE_XR_FUNC(xrEnumerateSpatialEntityComponentTypesBD) \
     USE_XR_FUNC(xrEnumerateSpatialPersistenceScopesEXT) \
+    USE_XR_FUNC(xrEnumerateSpatialReferenceImageFormatsEXT) \
     USE_XR_FUNC(xrEnumerateSupportedAnchorTrackableTypesANDROID) \
     USE_XR_FUNC(xrEnumerateSupportedAudioSampleRateBD) \
     USE_XR_FUNC(xrEnumerateSupportedPersistenceAnchorTypesANDROID) \
     USE_XR_FUNC(xrEnumerateSupportedSemanticLabelSetsANDROID) \
+<<<<<<< HEAD
+=======
+    USE_XR_FUNC(xrEnumerateSupportedSpatialContainerGraphicsPresentationsEXT) \
+>>>>>>> upstream/bleeding-edge
     USE_XR_FUNC(xrEnumerateSupportedTrackableTypesANDROID) \
     USE_XR_FUNC(xrEnumerateSwapchainFormats) \
     USE_XR_FUNC(xrEnumerateSwapchainImages) \
@@ -727,13 +772,16 @@ struct openxr_instance_funcs
     USE_XR_FUNC(xrGetAudioOutputDeviceGuidOculus) \
     USE_XR_FUNC(xrGetBodySkeletonFB) \
     USE_XR_FUNC(xrGetBodySkeletonHTC) \
+    USE_XR_FUNC(xrGetBodyTrackingStateBD) \
+    USE_XR_FUNC(xrGetCoarseTrackingEyesInfoANDROID) \
     USE_XR_FUNC(xrGetControllerModelKeyMSFT) \
     USE_XR_FUNC(xrGetControllerModelPropertiesMSFT) \
     USE_XR_FUNC(xrGetControllerModelStateMSFT) \
     USE_XR_FUNC(xrGetCurrentInteractionProfile) \
+    USE_XR_FUNC(xrGetD3D11GraphicsRequirementsKHR) \
+    USE_XR_FUNC(xrGetD3D12GraphicsRequirementsKHR) \
     USE_XR_FUNC(xrGetDeviceSampleRateFB) \
     USE_XR_FUNC(xrGetDisplayRefreshRateFB) \
-    USE_XR_FUNC(xrGetEnvironmentDepthSwapchainStateMETA) \
     USE_XR_FUNC(xrGetExportedLocalizationMapDataML) \
     USE_XR_FUNC(xrGetEyeGazesFB) \
     USE_XR_FUNC(xrGetFaceCalibrationStateANDROID) \
@@ -744,11 +792,16 @@ struct openxr_instance_funcs
     USE_XR_FUNC(xrGetFacialExpressionsHTC) \
     USE_XR_FUNC(xrGetFacialSimulationDataBD) \
     USE_XR_FUNC(xrGetFacialSimulationModeBD) \
+<<<<<<< HEAD
+=======
+    USE_XR_FUNC(xrGetFineTrackingEyesInfoANDROID) \
+>>>>>>> upstream/bleeding-edge
     USE_XR_FUNC(xrGetFoveationEyeTrackedStateMETA) \
     USE_XR_FUNC(xrGetHandGestureQCOM) \
     USE_XR_FUNC(xrGetHandMeshFB) \
     USE_XR_FUNC(xrGetInputSourceLocalizedName) \
     USE_XR_FUNC(xrGetInstanceProperties) \
+    USE_XR_FUNC(xrGetLightEstimateANDROID) \
     USE_XR_FUNC(xrGetMarkerDetectorStateML) \
     USE_XR_FUNC(xrGetMarkerLengthML) \
     USE_XR_FUNC(xrGetMarkerNumberML) \
@@ -786,6 +839,8 @@ struct openxr_instance_funcs
     USE_XR_FUNC(xrGetSpaceComponentStatusFB) \
     USE_XR_FUNC(xrGetSpaceContainerFB) \
     USE_XR_FUNC(xrGetSpaceRoomLayoutFB) \
+    USE_XR_FUNC(xrGetSpaceRoomMeshFaceIndicesMETA) \
+    USE_XR_FUNC(xrGetSpaceRoomMeshMETA) \
     USE_XR_FUNC(xrGetSpaceSemanticLabelsFB) \
     USE_XR_FUNC(xrGetSpaceTriangleMeshMETA) \
     USE_XR_FUNC(xrGetSpaceUserIdFB) \
@@ -799,9 +854,15 @@ struct openxr_instance_funcs
     USE_XR_FUNC(xrGetSpatialBufferUint8EXT) \
     USE_XR_FUNC(xrGetSpatialBufferVector2fEXT) \
     USE_XR_FUNC(xrGetSpatialBufferVector3fEXT) \
+    USE_XR_FUNC(xrGetSpatialContainerBoundsEXT) \
+    USE_XR_FUNC(xrGetSpatialContainerStateEXT) \
     USE_XR_FUNC(xrGetSpatialEntityComponentDataBD) \
     USE_XR_FUNC(xrGetSpatialEntityUuidBD) \
     USE_XR_FUNC(xrGetSpatialGraphNodeBindingPropertiesMSFT) \
+<<<<<<< HEAD
+=======
+    USE_XR_FUNC(xrGetStationaryReferenceSpaceGenerationIdEXT) \
+>>>>>>> upstream/bleeding-edge
     USE_XR_FUNC(xrGetSubmeshDataANDROID) \
     USE_XR_FUNC(xrGetSwapchainStateFB) \
     USE_XR_FUNC(xrGetSystem) \
@@ -824,17 +885,21 @@ struct openxr_instance_funcs
     USE_XR_FUNC(xrGetVulkanGraphicsRequirementsKHR) \
     USE_XR_FUNC(xrGetVulkanInstanceExtensionsKHR) \
     USE_XR_FUNC(xrGetWorldMeshBufferRecommendSizeML) \
+    USE_XR_FUNC(xrHapticParametricGetPropertiesEXT) \
     USE_XR_FUNC(xrImportLocalizationMapML) \
     USE_XR_FUNC(xrLoadControllerModelMSFT) \
     USE_XR_FUNC(xrLoadRenderModelFB) \
     USE_XR_FUNC(xrLocateBodyJointsBD) \
     USE_XR_FUNC(xrLocateBodyJointsFB) \
     USE_XR_FUNC(xrLocateBodyJointsHTC) \
+    USE_XR_FUNC(xrLocateGeospatialPoseANDROID) \
+    USE_XR_FUNC(xrLocateGeospatialPoseFromPoseANDROID) \
     USE_XR_FUNC(xrLocateHandJointsEXT) \
     USE_XR_FUNC(xrLocateSceneComponentsMSFT) \
     USE_XR_FUNC(xrLocateSpace) \
     USE_XR_FUNC(xrLocateSpaces) \
     USE_XR_FUNC(xrLocateSpacesKHR) \
+    USE_XR_FUNC(xrLocateSpatialContainerViewsEXT) \
     USE_XR_FUNC(xrLocateViews) \
     USE_XR_FUNC(xrNegotiateLoaderRuntimeInterface) \
     USE_XR_FUNC(xrPassthroughLayerPauseFB) \
@@ -872,18 +937,24 @@ struct openxr_instance_funcs
     USE_XR_FUNC(xrReleaseSwapchainImage) \
     USE_XR_FUNC(xrRemoveTrackableImageDatabaseANDROID) \
     USE_XR_FUNC(xrRequestBodyTrackingFidelityMETA) \
+<<<<<<< HEAD
+=======
+    USE_XR_FUNC(xrRequestBoundaryVisibilityMETA) \
+>>>>>>> upstream/bleeding-edge
     USE_XR_FUNC(xrRequestDisplayRefreshRateFB) \
     USE_XR_FUNC(xrRequestExitSession) \
     USE_XR_FUNC(xrRequestMapLocalizationML) \
     USE_XR_FUNC(xrRequestSceneCaptureFB) \
+    USE_XR_FUNC(xrRequestSpatialContainerBoundsModeEXT) \
+    USE_XR_FUNC(xrRequestSpatialContainerVisibleEXT) \
     USE_XR_FUNC(xrRequestWorldMeshAsyncML) \
     USE_XR_FUNC(xrRequestWorldMeshCompleteML) \
     USE_XR_FUNC(xrRequestWorldMeshStateAsyncML) \
     USE_XR_FUNC(xrRequestWorldMeshStateCompleteML) \
     USE_XR_FUNC(xrResetBodyTrackingCalibrationMETA) \
     USE_XR_FUNC(xrResultToString) \
+    USE_XR_FUNC(xrResultToString2KHR) \
     USE_XR_FUNC(xrResumeSimultaneousHandsAndControllersTrackingMETA) \
-    USE_XR_FUNC(xrRetrieveSpaceDiscoveryResultsMETA) \
     USE_XR_FUNC(xrRetrieveSpaceQueryResultsFB) \
     USE_XR_FUNC(xrSaveSpaceFB) \
     USE_XR_FUNC(xrSaveSpaceListFB) \
@@ -892,8 +963,16 @@ struct openxr_instance_funcs
     USE_XR_FUNC(xrSetColorSpaceFB) \
     USE_XR_FUNC(xrSetDigitalLensControlALMALENCE) \
     USE_XR_FUNC(xrSetEnvironmentDepthEstimationVARJO) \
+<<<<<<< HEAD
     USE_XR_FUNC(xrSetEnvironmentDepthHandRemovalMETA) \
     USE_XR_FUNC(xrSetFacialSimulationModeBD) \
+=======
+    USE_XR_FUNC(xrSetFacialSimulationModeBD) \
+    USE_XR_FUNC(xrSetGoogleCloudAuthAsyncANDROID) \
+    USE_XR_FUNC(xrSetGoogleCloudAuthCompleteANDROID) \
+    USE_XR_FUNC(xrSetHandTrackingFrequencyHintMETA) \
+    USE_XR_FUNC(xrSetHdrMetadataSONY) \
+>>>>>>> upstream/bleeding-edge
     USE_XR_FUNC(xrSetInputDeviceActiveEXT) \
     USE_XR_FUNC(xrSetInputDeviceLocationEXT) \
     USE_XR_FUNC(xrSetInputDeviceStateBoolEXT) \
@@ -916,14 +995,13 @@ struct openxr_instance_funcs
     USE_XR_FUNC(xrShareSpatialAnchorAsyncBD) \
     USE_XR_FUNC(xrShareSpatialAnchorCompleteBD) \
     USE_XR_FUNC(xrSnapshotMarkerDetectorML) \
+    USE_XR_FUNC(xrStartBodyTrackingCalibrationAppBD) \
     USE_XR_FUNC(xrStartColocationAdvertisementMETA) \
     USE_XR_FUNC(xrStartColocationDiscoveryMETA) \
-    USE_XR_FUNC(xrStartEnvironmentDepthProviderMETA) \
     USE_XR_FUNC(xrStartSenseDataProviderAsyncBD) \
     USE_XR_FUNC(xrStartSenseDataProviderCompleteBD) \
     USE_XR_FUNC(xrStopColocationAdvertisementMETA) \
     USE_XR_FUNC(xrStopColocationDiscoveryMETA) \
-    USE_XR_FUNC(xrStopEnvironmentDepthProviderMETA) \
     USE_XR_FUNC(xrStopHapticFeedback) \
     USE_XR_FUNC(xrStopSenseDataProviderBD) \
     USE_XR_FUNC(xrStringToPath) \
@@ -936,12 +1014,6 @@ struct openxr_instance_funcs
     USE_XR_FUNC(xrSuggestVirtualKeyboardLocationMETA) \
     USE_XR_FUNC(xrSyncActions) \
     USE_XR_FUNC(xrThermalGetTemperatureTrendEXT) \
-    USE_XR_FUNC(xrTriangleMeshBeginUpdateFB) \
-    USE_XR_FUNC(xrTriangleMeshBeginVertexBufferUpdateFB) \
-    USE_XR_FUNC(xrTriangleMeshEndUpdateFB) \
-    USE_XR_FUNC(xrTriangleMeshEndVertexBufferUpdateFB) \
-    USE_XR_FUNC(xrTriangleMeshGetIndexBufferFB) \
-    USE_XR_FUNC(xrTriangleMeshGetVertexBufferFB) \
     USE_XR_FUNC(xrTryCreateSpatialGraphStaticNodeBindingMSFT) \
     USE_XR_FUNC(xrUnpersistAnchorANDROID) \
     USE_XR_FUNC(xrUnpersistSpatialAnchorAsyncBD) \
@@ -963,3 +1035,11 @@ struct openxr_instance_funcs
     USE_XR_FUNC(xrWaitSwapchainImage)
 
 #endif /* __WINE_OPENXR_THUNKS_H */
+/* For use by xrInstance and children */
+struct openxr_instance_funcs
+{
+#define USE_XR_FUNC(x) PFN_ ## x p_ ## x;
+    ALL_XR_INSTANCE_FUNCS()
+#undef USE_XR_FUNC
+};
+

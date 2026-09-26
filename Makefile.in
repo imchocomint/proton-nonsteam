@@ -426,28 +426,27 @@ $(eval $(call rules-makedep,lsteamclient,aarch64))
 
 ##
 ## openxr
-## Note 32-bit is not supported by SteamVR, so we don't build it.
 ##
 
 OPENXR_CMAKE_ARGS = -DHAVE_FILESYSTEM_WITHOUT_LIB=0
 
 $(eval $(call rules-source,openxr,$(SRCDIR)/OpenXR-SDK))
-# $(eval $(call rules-cmake,openxr,i386,unix))
+$(eval $(call rules-cmake,openxr,i386,unix))
 $(eval $(call rules-cmake,openxr,x86_64,unix))
 $(eval $(call rules-cmake,openxr,aarch64,unix))
 
 
 ##
 ## wineopenxr
-## Note 32-bit is not supported by SteamVR, so we don't build it.
 ##
 
 WINEOPENXR_LDFLAGS = -lopenxr_loader
 WINEOPENXR_DEPENDS = wine openxr
 
-WINEOPENXR_aarch64_PE_ARCHS = arm64ec x86_64
+WINEOPENXR_aarch64_PE_ARCHS = arm64ec i386 x86_64
 
 $(eval $(call rules-source,wineopenxr,$(SRCDIR)/wineopenxr))
+$(eval $(call rules-makedep,wineopenxr,i386))
 $(eval $(call rules-makedep,wineopenxr,x86_64))
 $(eval $(call rules-makedep,wineopenxr,aarch64))
 
@@ -745,6 +744,24 @@ $(OBJ)/.dxvk-nvapi-post-source:
 
 
 ##
+## dxvk-igdext
+##
+
+DXVK_IGDEXT_x86_64_CMAKE_ARGS = \
+  -DCMAKE_TOOLCHAIN_FILE=$(DXVK_IGDEXT_SRC)/toolchain-mingw64.cmake \
+  -DCMAKE_INSTALL_BINDIR=$(DXVK_IGDEXT_x86_64_DST)/lib/wine/igdext/x86_64-windows
+
+$(eval $(call rules-source,dxvk-igdext,$(SRCDIR)/dxvk-igdext))
+$(eval $(call rules-cmake,dxvk-igdext,x86_64,windows))
+
+$(OBJ)/.dxvk-igdext-post-source:
+	mkdir -p $(DST_LIBDIR)/wine/igdext
+	rm -rf $(DST_LIBDIR)/wine/igdext/version
+	echo "$(shell git -C $(SRCDIR) submodule status -- dxvk-igdext)" > $(DST_LIBDIR)/wine/igdext/version
+	touch $@
+
+
+##
 ## vkd3d
 ##
 
@@ -856,11 +873,26 @@ $(OBJ)/.vkd3d-proton-post-source:
 
 ifneq ($(findstring aarch64,$(unix_ARCHS)),)
 FEX_COMMON_CMAKE_ARGS = \
+<<<<<<< HEAD
   -DENABLE_FEXCORE_PROFILER=True -DCMAKE_BUILD_TYPE=Release -DENABLE_LTO=False \
   -DBUILD_TESTING=False -DTUNE_CPU=none -DRANGES_NATIVE=OFF \
   -DOVERRIDE_VERSION=$$(cat $(FEX_SRC)/.git_describe) \
   -DOVERRIDE_HASH=$$(cat $(FEX_SRC)/.git_rev)
 
+=======
+  -DENABLE_FEXCORE_PROFILER=True -DENABLE_LTO=False \
+  -DBUILD_TESTING=False -DTUNE_CPU=none -DRANGES_NATIVE=OFF \
+  -DBUILD_STEAM_SUPPORT=True \
+  -DOVERRIDE_VERSION=$$(cat $(FEX_SRC)/.git_describe) \
+  -DOVERRIDE_HASH=$$(cat $(FEX_SRC)/.git_rev)
+
+ifneq ($(UNSTRIPPED_BUILD),)
+FEX_COMMON_CMAKE_ARGS += -DCMAKE_BUILD_TYPE=RelWithDebInfo
+else
+FEX_COMMON_CMAKE_ARGS += -DCMAKE_BUILD_TYPE=Release
+endif
+
+>>>>>>> upstream/bleeding-edge
 FEX_CMAKE_ARGS = $(FEX_COMMON_CMAKE_ARGS) \
   -DCMAKE_TOOLCHAIN_FILE=$(FEX_SRC)/Data/CMake/toolchain_mingw.cmake \
 
@@ -1003,22 +1035,29 @@ LIBERATION_SRCDIR = $(FONTS)/liberation-fonts/src
 SOURCE_HAN_SANS_SRCDIR = $(FONTS)/source-han-sans
 UME_DIR = $(FONTS)/ume
 
-msyh.ttf_CIDFONT = $(SOURCE_HAN_SANS_SRCDIR)/cidfont.ps.OTC.SC
-msyh.ttf_FEATURES = $(SOURCE_HAN_SANS_SRCDIR)/features.OTC.SC
+msyh.ttf_CIDFONT = $(SOURCE_HAN_SANS_SRCDIR)/Regular/cidfont.ps.OTC.SC
+msyh.ttf_FEATURES = $(SOURCE_HAN_SANS_SRCDIR)/Regular/features.OTC.SC
 msyh.ttf_SEQUENCES = $(SOURCE_HAN_SANS_SRCDIR)/SourceHanSans_CN_sequences.txt
 msyh.ttf_UNISOURCE = $(SOURCE_HAN_SANS_SRCDIR)/UniSourceHanSansCN-UTF32-H
 msyh.ttf_MENUNAMEDB = $(FONTS)/patches/YaHei-FontMenuNameDB
 msyh.ttf = $(FONTS_OBJ)/source-han/msyh.ttf
 
-simsun.ttf_CIDFONT = $(SOURCE_HAN_SANS_SRCDIR)/cidfont.ps.OTC.SC
-simsun.ttf_FEATURES = $(SOURCE_HAN_SANS_SRCDIR)/features.OTC.SC
+msyhbd.ttf_CIDFONT = $(SOURCE_HAN_SANS_SRCDIR)/Bold/cidfont.ps.OTC.SC
+msyhbd.ttf_FEATURES = $(SOURCE_HAN_SANS_SRCDIR)/Bold/features.OTC.SC
+msyhbd.ttf_SEQUENCES = $(SOURCE_HAN_SANS_SRCDIR)/SourceHanSans_CN_sequences.txt
+msyhbd.ttf_UNISOURCE = $(SOURCE_HAN_SANS_SRCDIR)/UniSourceHanSansCN-UTF32-H
+msyhbd.ttf_MENUNAMEDB = $(FONTS)/patches/YaHeiBold-FontMenuNameDB
+msyhbd.ttf = $(FONTS_OBJ)/source-han/msyhbd.ttf
+
+simsun.ttf_CIDFONT = $(SOURCE_HAN_SANS_SRCDIR)/Regular/cidfont.ps.OTC.SC
+simsun.ttf_FEATURES = $(SOURCE_HAN_SANS_SRCDIR)/Regular/features.OTC.SC
 simsun.ttf_SEQUENCES = $(SOURCE_HAN_SANS_SRCDIR)/SourceHanSans_CN_sequences.txt
 simsun.ttf_UNISOURCE = $(SOURCE_HAN_SANS_SRCDIR)/UniSourceHanSansCN-UTF32-H
 simsun.ttf_MENUNAMEDB = $(FONTS)/patches/SimSun-FontMenuNameDB
 simsun.ttf = $(FONTS_OBJ)/source-han/simsun.ttf
 
-nsimsun.ttf_CIDFONT = $(SOURCE_HAN_SANS_SRCDIR)/cidfont.ps.OTC.SC
-nsimsun.ttf_FEATURES = $(SOURCE_HAN_SANS_SRCDIR)/features.OTC.SC
+nsimsun.ttf_CIDFONT = $(SOURCE_HAN_SANS_SRCDIR)/Regular/cidfont.ps.OTC.SC
+nsimsun.ttf_FEATURES = $(SOURCE_HAN_SANS_SRCDIR)/Regular/features.OTC.SC
 nsimsun.ttf_SEQUENCES = $(SOURCE_HAN_SANS_SRCDIR)/SourceHanSans_CN_sequences.txt
 nsimsun.ttf_UNISOURCE = $(SOURCE_HAN_SANS_SRCDIR)/UniSourceHanSansCN-UTF32-H
 nsimsun.ttf_MENUNAMEDB = $(FONTS)/patches/NSimSun-FontMenuNameDB
@@ -1036,8 +1075,8 @@ msuigothic.ttf_FONT = $(UME_DIR)/ume-ugo4.ttf
 msuigothic.ttf_NAMETABLE_PATCH = $(FONTS)/patches/UmeUIGothic-nametable.patch
 msuigothic.ttf = $(FONTS_OBJ)/ume-gothic/msuigothic.ttf
 
-malgun.ttf_CIDFONT = $(SOURCE_HAN_SANS_SRCDIR)/cidfont.ps.OTC.K
-malgun.ttf_FEATURES = $(SOURCE_HAN_SANS_SRCDIR)/features.OTC.K
+malgun.ttf_CIDFONT = $(SOURCE_HAN_SANS_SRCDIR)/Regular/cidfont.ps.OTC.K
+malgun.ttf_FEATURES = $(SOURCE_HAN_SANS_SRCDIR)/Regular/features.OTC.K
 malgun.ttf_SEQUENCES = $(SOURCE_HAN_SANS_SRCDIR)/SourceHanSans_KR_sequences.txt
 malgun.ttf_UNISOURCE = $(SOURCE_HAN_SANS_SRCDIR)/UniSourceHanSansKR-UTF32-H
 malgun.ttf_MENUNAMEDB = $(FONTS)/patches/Malgun-FontMenuNameDB
@@ -1082,6 +1121,7 @@ noto_serif_tibetan.ttf = $(FONTS)/noto/NotoSerifTibetan-Regular.ttf
 micross.ttf = $(FONTS_OBJ)/micross.ttf
 nirmala.ttf = $(FONTS_OBJ)/nirmala.ttf
 alt_arial.ttf = $(ALT_FONTS_OBJ)/arial.ttf
+lucon.ttf = $(FONTS_OBJ)/lucon.ttf
 
 #The use of "Arial" here is for compatibility with programs that require that exact string. This font is not Arial.
 arial_NAMES := "Arial" "Arial" "Arial"
@@ -1135,7 +1175,10 @@ $(FONTS_OBJ)/source-han/%.ttf: $$(%.ttf_CIDFONT) $$(%.ttf_FEATURES) $$(%.ttf_SEQ
 	# to run it in a dedicated temporary directory to prevent concurrent instances
 	# to step onto each other's feet
 	(TEMP_DIR=`mktemp -d` && cd $$TEMP_DIR && afdko sfntedit -a CFF=$(abspath $($(notdir $@)).cff) $(abspath $@.tmp) && rm -fr $$TEMP_DIR)
-	if [ "$(notdir $@)" = "msyh.ttf" ]; then afdko otf2ttf -o $@.tmp.ttf $@.tmp; mv -f $@.tmp.ttf $@.tmp; fi
+	if [ "$(notdir $@)" = "msyh.ttf" ] || [ "$(notdir $@)" = "msyhbd.ttf" ]; then \
+		afdko otf2ttf -o $@.tmp.ttf $@.tmp; \
+		mv -f $@.tmp.ttf $@.tmp; \
+	fi
 	mv $@.tmp $@
 
 $(FONTS_OBJ)/ume-gothic/%.ttf: $$(%.ttf_FONT) $$(%.ttf_NAMETABLE_PATCH)
@@ -1174,19 +1217,25 @@ $(alt_arial.ttf): $(FONTS)/scripts/merge.py $(noto_sans.ttf) $(noto_sans_arabic.
 	$(FONTS)/scripts/merge.py $(noto_sans.ttf) $(noto_sans_arabic.ttf) $(noto_sans_hebrew.ttf) $(noto_sans_armenian.ttf) $(noto_sans_coptic.ttf) \
 		$(noto_sans_math.ttf) $(noto_sans_symbols.ttf) $(noto_sans_symbols2.ttf) $(noto_sans_mono.ttf) "Arial" "Arial" "Regular" $(FONTS)/ranges/arial $(alt_arial.ttf)
 
+$(lucon.ttf): $(FONTS)/scripts/merge.py $(noto_sans_mono.ttf) $(noto_sans_math.ttf) $(noto_sans_symbols.ttf) $(noto_sans_symbols2.ttf)
+	$(FONTS)/scripts/merge.py $(noto_sans_mono.ttf) $(noto_sans_math.ttf) $(noto_sans_symbols.ttf) $(noto_sans_symbols2.ttf) "LucidaConsole" "Lucida Console" "Regular" $(FONTS)/ranges/lucon $(lucon.ttf)
+
 fonts: $(msyh.ttf)
+fonts: $(msyhbd.ttf)
 fonts: $(simsun.ttc)
 fonts: $(msgothic.ttc)
 fonts: $(malgun.ttf)
 fonts: $(micross.ttf)
 fonts: $(nirmala.ttf)
 fonts: $(alt_arial.ttf)
+fonts: $(lucon.ttf)
 
 DIST_FONTS := $(DST_DIR)/share/fonts
 $(DIST_FONTS): fonts
 	mkdir -p $@
 	cp $(FONTS_OBJ)/*.ttf "$@"
 	cp $(FONTS_OBJ)/source-han/msyh.ttf "$@"
+	cp $(FONTS_OBJ)/source-han/msyhbd.ttf "$@"
 	cp $(FONTS_OBJ)/source-han/simsun.ttc "$@"
 	cp $(FONTS_OBJ)/ume-gothic/msgothic.ttc "$@"
 	cp $(FONTS_OBJ)/source-han/malgun.ttf "$@"
@@ -1233,8 +1282,19 @@ all-dist: $(OBJ)/.gecko-i386-dist $(OBJ)/.gecko-x86_64-dist
 ## wine-mono
 ##
 
+<<<<<<< HEAD
 WINEMONO_VER := 11.2.0
 WINEMONO_TARBALL := wine-mono-$(WINEMONO_VER)-x86.tar.xz
+=======
+WINEMONO_VER := 11.3.0
+WINEMONO_x86_64_TARBALL := wine-mono-$(WINEMONO_VER)-x86.tar.xz
+WINEMONO_aarch64_TARBALL := wine-mono-$(WINEMONO_VER)-arm64.tar.xz
+ifeq ($(TARGET_ARCH),arm64)
+WINEMONO_TARBALL := $(WINEMONO_aarch64_TARBALL)
+else
+WINEMONO_TARBALL := $(WINEMONO_x86_64_TARBALL)
+endif
+>>>>>>> upstream/bleeding-edge
 DIST_WINEMONO_DIR := $(DST_DIR)/share/wine/mono
 DIST_WINEMONO := $(OBJ)/.wine-mono-dist
 MONO_TARBALL_URL := https://github.com/madewokherd/wine-mono/releases/download/wine-mono-$(WINEMONO_VER)/$(WINEMONO_TARBALL)
@@ -1257,8 +1317,16 @@ all-dist: $(DIST_WINEMONO)
 ## xalia
 ##
 
+<<<<<<< HEAD
 XALIA_VER := 0.4.9
+=======
+XALIA_VER := 0.5.0
+ifeq ($(TARGET_ARCH),arm64)
+XALIA_ZIP := xalia-$(XALIA_VER)-net48-arm64-mono.zip
+else
+>>>>>>> upstream/bleeding-edge
 XALIA_ZIP := xalia-$(XALIA_VER)-net48-mono.zip
+endif
 DIST_XALIA_DIR := $(DST_DIR)/share/xalia
 DIST_XALIA := $(OBJ)/.xalia-dist
 XALIA_ZIP_URL := https://github.com/madewokherd/xalia/releases/download/xalia-$(XALIA_VER)/$(XALIA_ZIP)
@@ -1274,6 +1342,12 @@ $(DIST_XALIA): $(SRC)/contrib/$(XALIA_ZIP) $(SRC)/xalia-fixups.gudl
 	mv $(DIST_XALIA_DIR)/main.gudl $(DIST_XALIA_DIR)/main.gudl.orig
 	cat $(SRC)/xalia-fixups.gudl $(DIST_XALIA_DIR)/main.gudl.orig|sed 's/\xef\xbb\xbf//' > $(DIST_XALIA_DIR)/main.gudl
 	rm $(DIST_XALIA_DIR)/main.gudl.orig
+	rm $(DIST_XALIA_DIR)/SDL3.dll
+ifeq ($(TARGET_ARCH),arm64)
+	ln -s ../wine/mono/wine-mono/lib/arm64/SDL3.dll $(DIST_XALIA_DIR)/SDL3.dll
+else
+	ln -s ../wine/mono/wine-mono/lib/x86_64/SDL3.dll $(DIST_XALIA_DIR)/SDL3.dll
+endif
 	touch $@
 
 all-dist: $(DIST_XALIA)
@@ -1347,7 +1421,7 @@ endif
 ## default_pfx
 ##
 
-default_pfx: wine gst_good gst_bad gst_libav gst_plugins_rs lsteamclient steamexe vrclient wineopenxr $(WINEOPENXR64_JSON) dxvk dxvk-nvapi vkd3d-proton
+default_pfx: wine gst_good gst_bad gst_libav gst_plugins_rs lsteamclient steamexe vrclient wineopenxr $(WINEOPENXR64_JSON) dxvk dxvk-nvapi dxvk-igdext vkd3d-proton
 	find $(DST_LIBDIR)/wine -type f -execdir chmod a-w '{}' '+'
 	rm -rf $(abspath $(DIST_PREFIX))
 	rm -rf $(abspath $(DIST_PREFIX_ARM64))
